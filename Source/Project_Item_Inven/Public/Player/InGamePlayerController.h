@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "InGamePlayerController.generated.h"
 
+class UInGameHUD;
+
 /**
  * 
  */
@@ -23,10 +25,15 @@ private:
 	class ATpsCharacter* m_TpsCharacter;
 
 private: // UI 설정
-	UPROPERTY(EditAnywhere, Category = HUD, Meta = (AllowPrivateAccess = true))
-	TSubclassOf<class UUserWidget> Inventory_UI;
+	// InGamePlay Mode 에서 HUD 출력
+	UPROPERTY(EditAnywhere, Category = UserInterface)
+	TSubclassOf<UInGameHUD> InGameHUD_UI;
 
-	class UUserWidget* m_ptrInventory;
+	UPROPERTY(EditAnywhere, Category = UserInterface)
+	TSubclassOf<UUserWidget> Inventory_UI;
+
+	UInGameHUD* m_ptrInGameHUD;
+	UUserWidget* m_ptrInventory;
 
 public:
 	/* Bind to key event "Inventory" */

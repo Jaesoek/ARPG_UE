@@ -40,6 +40,7 @@ public:
 	FAddItemDelegate OnAddItem;
 
 private:
+	/** Inventory item array */
 	UPROPERTY(BlueprintReadOnly, Category = Inventory, Meta = (AllowPrivateAccess = true))
 	TArray<FInventoryStruct> m_arrInventory;
 
@@ -49,7 +50,6 @@ private:
 public:
 	const TArray<FInventoryStruct>* getInventory() const { return &m_arrInventory; };
 
-public:
 	// Inventory 내용물 추가
 	UFUNCTION(BlueprintCallable)
 	bool addItem(UClass* itemClass, FText name, FText description, UTexture2D* thumbnail);
@@ -63,4 +63,24 @@ public:
 	// Inventory 내용물 삭제
 	UFUNCTION(BlueprintCallable)
 	bool removeItemAt(int pos);
+
+public:
+	UPROPERTY(EditAnywhere, Category = Equip)
+	TSubclassOf<class AEquipItem> m_Rifle;
+
+	UPROPERTY(EditAnywhere, Category = Equip)
+	TSubclassOf<class AEquipItem> m_Sword;
+
+private:
+	/** Equip item map */
+	TMap<FString, UClass*> m_mapEquip;
+
+public:
+	const TMap<FString, UClass*>* getEquipMap() const { return &m_mapEquip; };
+
+public:
+	bool useItem(const FInventoryStruct& itemClass);
+private:
+	bool useEquipable();
+	bool useConsumable();
 };

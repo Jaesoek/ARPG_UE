@@ -2,6 +2,8 @@
 
 
 #include "Enemy/BaseEnemy.h"
+#include "Component/CharacterStatComp.h"
+#include "Components/WidgetComponent.h"
 
 ABaseEnemy::ABaseEnemy()
 {
@@ -9,12 +11,26 @@ ABaseEnemy::ABaseEnemy()
 
 	// Mesh Decal ¿µÇâ X
 	GetMesh()->bReceivesDecals = false;
+
+	// Status component
+	m_CharacterStatComp = CreateDefaultSubobject<UCharacterStatComp>(TEXT("StatusComponent"));
+
+	// Hp Widget component
+	m_HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HpBarWidgetComp"));
+	m_HpBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 }
 
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+}
+
+void ABaseEnemy::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+//	m_CharacterStatComp->OnHpChanged().AddUObject(this, );
 }
 
 void ABaseEnemy::Tick(float DeltaTime)

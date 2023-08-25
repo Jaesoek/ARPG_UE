@@ -3,6 +3,7 @@
 
 #include "InGamePlayerState.h"
 #include "Item/BaseItem.h"
+#include "Item/EquipItem.h"
 
 void AInGamePlayerState::PostInitializeComponents()
 {
@@ -106,5 +107,36 @@ bool AInGamePlayerState::removeItemAt(int pos)
 		return true;
 	}
 
+	return false;
+}
+
+bool AInGamePlayerState::useItem(const FInventoryStruct& itemInventory)
+{
+	auto ptrItem = Cast<ABaseItem>(itemInventory.itemClass->GetDefaultObject());
+	if (ptrItem == nullptr) return false;
+
+	switch (ptrItem->GetItemType())
+	{
+		case EItemType::Consumable:
+		{
+			useConsumable();
+		}
+		case EItemType::Equipable:
+		{
+			useEquipable();
+		}
+	}
+
+	return false;
+}
+
+bool AInGamePlayerState::useConsumable()
+{
+	
+	return false;
+}
+
+bool AInGamePlayerState::useEquipable()
+{
 	return false;
 }

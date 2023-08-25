@@ -79,6 +79,11 @@ void ABaseItem::Tick(float DeltaTime)
 	}
 }
 
+void ABaseItem::UseItem_Implementation()
+{
+
+}
+
 void ABaseItem::setStatus(EItemStatus eStatus)
 {
 	m_eItemStatus = eStatus;

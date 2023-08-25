@@ -7,6 +7,9 @@
 #include "Blueprint/WidgetTree.h"
 #include "Player/TpsCharacter.h"
 
+#include "UI/InGameHUD.h"
+#include "UI/InventoryUI.h"
+
 void AInGamePlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -24,6 +27,12 @@ void AInGamePlayerController::BeginPlay()
 	{
 		m_ptrInventory = Cast<UUserWidget>(CreateWidget(GetWorld(), Inventory_UI));
 		m_ptrInventory->AddToViewport();
+	}
+
+	if (InGameHUD_UI)
+	{
+		m_ptrInGameHUD = Cast<UInGameHUD>(CreateWidget(GetWorld(), InGameHUD_UI));
+		m_ptrInGameHUD->AddToViewport();
 	}
 }
 

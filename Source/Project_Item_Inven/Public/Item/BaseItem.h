@@ -46,10 +46,10 @@ public:
 	FORCEINLINE EItemType GetItemType() const { return m_eItemType; };
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ItemInfo, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemInfo, Meta = (AllowPrivateAccess = true))
 	FText m_TextItemName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ItemInfo, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemInfo, Meta = (AllowPrivateAccess = true))
 	FText m_TextItemDescription;
 
 private: // Inventory slot 에 들어갈 수 있는 최대 개수
@@ -57,6 +57,11 @@ private: // Inventory slot 에 들어갈 수 있는 최대 개수
 	int m_nMaxItemCount;
 public:
 	FORCEINLINE int GetMaxItemCount() const { return m_nMaxItemCount; };
+
+public: // Item 사용
+	UFUNCTION(BlueprintNativeEvent)
+	void UseItem();
+	virtual void UseItem_Implementation();
 
 public:
 	UFUNCTION()

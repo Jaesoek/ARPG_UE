@@ -11,20 +11,6 @@ class PROJECT_ITEM_INVEN_API ABaseEnemy : public ACharacter
 {
 	GENERATED_BODY()
 
-public:
-	ABaseEnemy();
-
-protected:
-	virtual void BeginPlay() override;
-
-public:
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-private:
-	void Dead();
-
 private:
 	// 해당 변수 결정 타이밍: 생성시 추가되는 식으로 설정
 	//  Defered Spawn 활용 필수
@@ -33,4 +19,26 @@ private:
 public:
 	FORCEINLINE const TArray<class ABaseItem*>& GetDropItemArr() const { return m_arrDropItem; };
 	FORCEINLINE void SetDropItemArr(class ABaseItem* const aItem) { m_arrDropItem.Add(aItem); };
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, Meta = (AllowPrivateAccess = true))
+	class UCharacterStatComp* m_CharacterStatComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UIWidget, Meta = (AllowPrivateAccess = true))
+	class UWidgetComponent* m_HpBarWidget;
+
+public:
+	ABaseEnemy();
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
+
+public:
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	void Dead();
 };

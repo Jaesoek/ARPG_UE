@@ -7,7 +7,7 @@
 #include "TargetingComp.generated.h"
 
 /** Only for ACharacter */
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECT_ITEM_INVEN_API UTargetingComp : public USceneComponent
 {
 	GENERATED_BODY()
@@ -24,14 +24,15 @@ public:
 private:
 	ACharacter* m_OwnerChar;
 
-private:
-	bool m_bFocused;
-public:
-	FORCEINLINE bool GetIsFocused() const { return m_bFocused; };
-	FORCEINLINE void SetIsFocused(bool isFocus) { m_bFocused = isFocus; };
+	TSet<AActor*> m_setTargetActors;
+
+	UPROPERTY(EditAnywhere, Category = TargetMark)
+	TSubclassOf<AActor> m_class_TargetMark;
+	AActor* m_TargetMark;
+
 
 private:
-	AActor* m_TargetActor{};
+	AActor* m_TargetedActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Targeting, meta = (AllowPrivateAccess = "true"))
 	class USphereComponent* TargetingSphere;
@@ -40,4 +41,9 @@ private:
 	void OnTargetingOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void EndTargetingOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+
+public:
+	bool FocusTarget();
+	void SwitchFocusedTarget();
 };

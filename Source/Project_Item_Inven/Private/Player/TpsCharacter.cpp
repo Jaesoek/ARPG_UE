@@ -4,8 +4,9 @@
 #include "Camera/CameraActor.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+
+#include "Player/InGamePlayerController.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -48,7 +49,7 @@ ATpsCharacter::ATpsCharacter()
 	m_TargetingComp->SetupAttachment(RootComponent);
 
 	// Setting Skill list
-	m_arrSKill.Init(nullptr, 4);
+	m_arrSKillComp.Init(nullptr, 4);
 }
 
 void ATpsCharacter::BeginPlay()
@@ -94,7 +95,9 @@ void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Key1", IE_Pressed, this, &ATpsCharacter::Skill1);
 	PlayerInputComponent->BindAction("Key2", IE_Pressed, this, &ATpsCharacter::Skill2);
 	PlayerInputComponent->BindAction("Key3", IE_Pressed, this, &ATpsCharacter::Skill3);
-	PlayerInputComponent->BindAction("Key4", IE_Pressed, this, &ATpsCharacter::Skill4);
+	PlayerInputComponent->BindAction("Key4", IE_Pressed, this, &ATpsCharacter::Skill4_Pressed);
+	PlayerInputComponent->BindAction("Key4", IE_Repeat, this, &ATpsCharacter::Skill4_Repeat);
+	PlayerInputComponent->BindAction("Key4", IE_Released, this, &ATpsCharacter::Skill4_Released);
 }
 
 void ATpsCharacter::MoveForward(float Value)
@@ -171,7 +174,7 @@ void ATpsCharacter::Attack()
 
 void ATpsCharacter::Skill1()
 {
-	auto skillComp = m_arrSKill[0];
+	auto skillComp = m_arrSKillComp[0];
 	if (skillComp == nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Empty Skill"));
@@ -185,34 +188,45 @@ void ATpsCharacter::Skill2()
 {
 	WeaponSwitchRifle();
 
-	auto skillComp = m_arrSKill[1];
+	auto skillComp = m_arrSKillComp[1];
 	if (skillComp == nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Empty Skill"));
 		return;
 	}
+	skillComp->ActivateSkill();
 }
 
 void ATpsCharacter::Skill3()
 {
 	WeaponSwitchSword();
 
-	auto skillComp = m_arrSKill[2];
+	auto skillComp = m_arrSKillComp[2];
 	if (skillComp == nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Empty Skill"));
 		return;
 	}
+	skillComp->ActivateSkill();
 }
 
-void ATpsCharacter::Skill4()
+void ATpsCharacter::Skill4_Pressed()
 {
-	auto skillComp = m_arrSKill[3];
+	auto skillComp = m_arrSKillComp[3];
 	if (skillComp == nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Empty Skill"));
 		return;
 	}
+	skillComp->ActivateSkill();
+}
+
+void ATpsCharacter::Skill4_Repeat()
+{
+}
+
+void ATpsCharacter::Skill4_Released()
+{
 }
 
 void ATpsCharacter::Equip(TSubclassOf<AEquipItem> equipItemClass)
@@ -234,7 +248,7 @@ void ATpsCharacter::WeaponSwitchRifle()
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
 
-		m_arrSKill.EmplaceAt(0, m_CurrentWeapon->m_SkillComp);
+		m_arrSKillComp.EmplaceAt(0, m_CurrentWeapon->m_SkillComp);
 	}
 }
 
@@ -251,7 +265,7 @@ void ATpsCharacter::WeaponSwitchSword()
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
 
-		m_arrSKill.EmplaceAt(0, nullptr);
+		m_arrSKillComp.EmplaceAt(0, nullptr);
 	}
 }
 

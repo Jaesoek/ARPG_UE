@@ -17,4 +17,7 @@ class PROJECT_ITEM_INVEN_API USkillSlot : public UUserWidget
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (BindWidget))
 	class UProgressBar* m_ProgressCoolTime;
+
+public:
+	void UpdateCoolTimePercent(float fPercent);
 };

@@ -9,6 +9,9 @@
 
 #include "UI/InGameHUD.h"
 #include "UI/InventoryUI.h"
+#include "UI/SkillSlot.h"
+
+#include "Skill/BaseSkillComponent.h"
 
 void AInGamePlayerController::SetupInputComponent()
 {
@@ -25,7 +28,7 @@ void AInGamePlayerController::BeginPlay()
 	// Inventory 셋팅
 	if (Inventory_UI)
 	{
-		m_ptrInventory = Cast<UUserWidget>(CreateWidget(GetWorld(), Inventory_UI));
+		m_ptrInventory = Cast<UUserWidget>(	CreateWidget(GetWorld(), Inventory_UI));
 		m_ptrInventory->AddToViewport();
 	}
 
@@ -41,6 +44,8 @@ void AInGamePlayerController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	m_TpsCharacter = Cast<ATpsCharacter>(InPawn);
+
+	// TODO: Character가 들고 있는 SkillComponent / UI_InGame SkillSlot 간에 바인딩 진행
 }
 
 void AInGamePlayerController::Inventory()

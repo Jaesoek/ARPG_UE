@@ -14,8 +14,8 @@ void UBaseSkillComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Cool time setting
-	m_fCoolTime = m_fMaxCoolTime + FLT_EPSILON;
+	// Cool time init
+	SetCoolTime(m_fMaxCoolTime + FLT_EPSILON);
 }
 
 
@@ -26,19 +26,50 @@ void UBaseSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	// Cool time
 	if (m_fCoolTime < m_fMaxCoolTime)
 	{
-		m_fCoolTime += DeltaTime;
+		SetCoolTime(m_fCoolTime + DeltaTime);
 	}
 	else if (m_fCoolTime >= m_fMaxCoolTime)
 	{
-		m_fCoolTime = m_fMaxCoolTime;
+		SetCoolTime(m_fMaxCoolTime);
 	}
 }
 
-void UBaseSkillComponent::ActivateSkill_Implementation()
+const float UBaseSkillComponent::GetCoolTime() const
 {
-	if (GetOwner()->GetOwner() == nullptr) return;
-	else if (m_fCoolTime < m_fMaxCoolTime) return;
+	return m_fCoolTime;
+}
 
-	m_fCoolTime = 0.f;
+void UBaseSkillComponent::SetCoolTime(float fCoolTime)
+{
+	m_fCoolTime = fCoolTime;
+	m_OnCoolTime.Broadcast(m_fCoolTime / m_fMaxCoolTime);
+}
+
+bool UBaseSkillComponent::ActivateSkill_Implementation()
+{
+	if (GetOwner()->GetOwner() == nullptr)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("No owner"));
+		return false;
+	}
+	else if (m_fCoolTime < m_fMaxCoolTime)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Cool Time!!!"));
+		return false;
+	}
+
+	SetCoolTime(0.f);
+	return true;
+}
+
+
+void UBaseSkillComponent::RepeatSkill_Implementation()
+{
+
+}
+
+void UBaseSkillComponent::ReleasedSkill_Implementation()
+{
+
 }
 

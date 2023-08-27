@@ -2,3 +2,9 @@
 
 
 #include "UI/SkillSlot.h"
+#include "Components/ProgressBar.h"
+
+void USkillSlot::UpdateCoolTimePercent(float fPercent)
+{
+	m_ProgressCoolTime->SetPercent(fPercent);
+}

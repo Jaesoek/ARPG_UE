@@ -26,9 +26,6 @@ private:
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Skill, Meta = (AllowPrivateAccess = true))
-	TArray<class UBaseSkillComponent*> m_arrSKill;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Skill, Meta = (AllowPrivateAccess = true))
 	class UBaseSkillComponent* m_SkillComp;
 
 public:

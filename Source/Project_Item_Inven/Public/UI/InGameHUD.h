@@ -31,8 +31,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* progress_sp;
 
-	// TODO: Skill list
-	TArray<USkillSlot*> m_arrSkill;
+	// Init in blueprint
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillList)
+	TArray<USkillSlot*> m_arrSkillSlot;
+
 
 	// Animations
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)

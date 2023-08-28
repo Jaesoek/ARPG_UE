@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Skill, Meta = (AllowPrivateAccess = true))
 	class UBaseSkillComponent* m_SkillComp;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Skill, Meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UBaseSkillComponent> m_SkillCompClass;
+
 public:
 	FORCEINLINE UAnimMontage* GetAttackMontage() const
 	{

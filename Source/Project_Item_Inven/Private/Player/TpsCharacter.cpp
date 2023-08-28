@@ -265,7 +265,7 @@ void ATpsCharacter::WeaponSwitchSword()
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
 
-		m_arrSKillComp.EmplaceAt(0, nullptr);
+		m_arrSKillComp.EmplaceAt(0, m_CurrentWeapon->m_SkillComp);
 	}
 }
 

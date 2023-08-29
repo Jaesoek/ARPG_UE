@@ -231,8 +231,7 @@ void ATpsCharacter::Skill4_Released()
 
 void ATpsCharacter::Equip(TSubclassOf<AEquipItem> equipItemClass)
 {
-
-
+	
 }
 
 void ATpsCharacter::WeaponSwitchRifle()
@@ -248,7 +247,13 @@ void ATpsCharacter::WeaponSwitchRifle()
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
 
-		m_arrSKillComp.EmplaceAt(0, m_CurrentWeapon->m_SkillComp);
+		UBaseSkillComponent* tSkill = NewObject<UBaseSkillComponent>(m_CurrentWeapon, m_CurrentWeapon->m_SkillCompClass, FName(TEXT("Skill1")));
+		if (IsValid(tSkill))
+		{
+			tSkill->RegisterComponent();
+			m_arrSKillComp.EmplaceAt(0, tSkill);
+			m_OnSkillChanged.Broadcast();
+		}
 	}
 }
 
@@ -265,7 +270,13 @@ void ATpsCharacter::WeaponSwitchSword()
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
 
-		m_arrSKillComp.EmplaceAt(0, m_CurrentWeapon->m_SkillComp);
+		UBaseSkillComponent* tSkill = NewObject<UBaseSkillComponent>(m_CurrentWeapon, m_CurrentWeapon->m_SkillCompClass, FName(TEXT("Skill1")));
+		if (IsValid(tSkill))
+		{
+			tSkill->RegisterComponent();
+			m_arrSKillComp.EmplaceAt(0, tSkill);
+			m_OnSkillChanged.Broadcast();
+		}
 	}
 }
 

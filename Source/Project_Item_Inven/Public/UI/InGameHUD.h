@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "InGameHUD.generated.h"
 
-
+class ATpsCharacter;
 class USkillSlot;
 
 /**
@@ -19,22 +19,30 @@ class PROJECT_ITEM_INVEN_API UInGameHUD : public UUserWidget
 
 public:
 	// Widgets
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UBorder* border_profile;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UImage* img_profile;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* progress_hp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* progress_sp;
 
-	// Init in blueprint
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillList)
-	TArray<USkillSlot*> m_arrSkillSlot;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UHorizontalBox* HorizontalBox_Skill;
 
+	// Skill slots
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	USkillSlot* Skill_Slot_1;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	USkillSlot* Skill_Slot_2;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	USkillSlot* Skill_Slot_3;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	USkillSlot* Skill_Slot_4;
 
 	// Animations
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
@@ -46,6 +54,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* Animation_Heal_Progress;
 
-public:
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
+private:
+	// TpsCharacter
+	ATpsCharacter* m_pPlayerChar;
+
+private:
+	virtual void NativeOnInitialized() override;
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+private:
+	void BindSkill();
 };

@@ -20,4 +20,5 @@ public:
 
 public:
 	void UpdateCoolTimePercent(float fPercent);
+	void SetSlotIcon(UTexture2D* thumbnail);
 };

@@ -24,19 +24,6 @@ void AInGamePlayerController::SetupInputComponent()
 void AInGamePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// Inventory 셋팅
-	if (Inventory_UI)
-	{
-		m_ptrInventory = Cast<UUserWidget>(	CreateWidget(GetWorld(), Inventory_UI));
-		m_ptrInventory->AddToViewport();
-	}
-
-	if (InGameHUD_UI)
-	{
-		m_ptrInGameHUD = Cast<UInGameHUD>(CreateWidget(GetWorld(), InGameHUD_UI));
-		m_ptrInGameHUD->AddToViewport();
-	}
 }
 
 void AInGamePlayerController::OnPossess(APawn* InPawn)
@@ -45,6 +32,19 @@ void AInGamePlayerController::OnPossess(APawn* InPawn)
 
 	m_TpsCharacter = Cast<ATpsCharacter>(InPawn);
 
+	// UI Setting
+	if (Inventory_UI)
+	{
+		m_ptrInventory = Cast<UUserWidget>(CreateWidget(GetWorld(), Inventory_UI));
+		m_ptrInventory->AddToViewport();
+	}
+
+	if (InGameHUD_UI)
+	{
+		m_ptrInGameHUD = Cast<UInGameHUD>(CreateWidget(GetWorld(), InGameHUD_UI));
+		m_ptrInGameHUD->AddToViewport();
+	}
+	
 	// TODO: Character가 들고 있는 SkillComponent / UI_InGame SkillSlot 간에 바인딩 진행
 }
 

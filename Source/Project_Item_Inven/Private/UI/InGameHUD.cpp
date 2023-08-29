@@ -4,8 +4,42 @@
 #include "UI/InGameHUD.h"
 #include "UI/SkillSlot.h"
 
+#include "Player/TpsCharacter.h"
+#include "Skill/BaseSkillComponent.h"
+
+void UInGameHUD::NativeOnInitialized()
+{
+	OnInitialized();
+
+	m_pPlayerChar = GetOwningPlayerPawn<ATpsCharacter>();
+	m_pPlayerChar->OnSkillChanged().AddUObject(this, &UInGameHUD::BindSkill);
+}
+
 void UInGameHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Tick(MyGeometry, InDeltaTime);
-
 }
+
+void _BindSkillLogic(UBaseSkillComponent* skillComp, USkillSlot* skillSlot)
+{
+	if (IsValid(skillComp))
+	{
+		skillComp->OnCoolTIme().AddUObject(skillSlot, &USkillSlot::UpdateCoolTimePercent);
+		skillSlot->SetSlotIcon(skillComp->m_Texture);
+	}
+	else
+	{
+		skillSlot->UpdateCoolTimePercent(0.f);
+		skillSlot->SetSlotIcon(nullptr);
+	}
+}
+
+void UInGameHUD::BindSkill()
+{
+	if (!IsValid(m_pPlayerChar)) return;
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[0], Skill_Slot_1);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[1], Skill_Slot_2);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[2], Skill_Slot_3);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[3], Skill_Slot_4);
+}
+

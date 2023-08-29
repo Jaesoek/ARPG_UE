@@ -50,9 +50,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, Meta = (AllowPrivateAccess = true))
 	class UCharacterStatComp* m_CharacterStatComp;
 
-	UPROPERTY(EditAnywhere, Category = Skill)
-	TArray<class UBaseSkillComponent*> m_arrSKillComp;
-
 	UPROPERTY(EditAnywhere, Category = Targeting)
 	class UTargetingComp* m_TargetingComp;
 
@@ -66,9 +63,17 @@ private:
 	/** Input forward */
 	float m_fInputForward;
 
+
+public: // Skill List
+	UPROPERTY(EditAnywhere, Category = Skill)
+	TArray<class UBaseSkillComponent*> m_arrSKillComp;
+
+	DECLARE_EVENT(ATpsCharacter, FSkillChangeDelegate);
+	FSkillChangeDelegate& OnSkillChanged() { return m_OnSkillChanged; }
+
 private:
-	UPROPERTY(EditAnywhere, Category = Animation)
-	UAnimMontage* m_RollAnimation;
+	FSkillChangeDelegate m_OnSkillChanged;
+
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
@@ -81,6 +86,10 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
 	class AEquipItem* m_CurrentWeapon;
+
+	UPROPERTY(EditAnywhere, Category = Animation) // TODO: 언젠간 어디로 옮겨야하는디...
+	UAnimMontage* m_RollAnimation;
+
 
 public:
 	ATpsCharacter();

@@ -49,12 +49,12 @@ int UCharacterStatComp::ReduceSp(int damage)
 	return m_SpCurrent;
 }
 
-int UCharacterStatComp::AddAttackSpeed(int attackSpeed)
+float UCharacterStatComp::AddAttackSpeed(float attackSpeed)
 {
-	return m_AttackSpeed;
+	return m_AttackSpeed += attackSpeed;
 }
 
-int UCharacterStatComp::ReduceAttackSpeed(int attackSpeed)
+float UCharacterStatComp::ReduceAttackSpeed(float attackSpeed)
 {
-	return m_AttackSpeed;
+	return m_AttackSpeed -= attackSpeed;
 }

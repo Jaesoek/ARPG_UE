@@ -1,12 +1,12 @@
 
 #include "Player/TpsCharacter.h"
 
+#include "Player/InGamePlayerController.h"
+
 #include "Camera/CameraActor.h"
 #include "Components/ActorComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-
-#include "Player/InGamePlayerController.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -17,6 +17,8 @@
 #include "Skill/BaseSkillComponent.h"
 #include "Item/EquipItem.h"
 #include "InGamePlayerState.h"
+
+#include "UI/InGameHUD.h"
 
 
 ATpsCharacter::ATpsCharacter()
@@ -43,13 +45,29 @@ ATpsCharacter::ATpsCharacter()
 	m_TpsSpringArm->SetupAttachment(RootComponent);
 	m_TpsChildComponent->SetupAttachment(m_TpsSpringArm);
 	m_TpsChildComponent->SetChildActorClass(ACameraActor::StaticClass());
-	
+
 	// For Setting Targeting
 	m_TargetingComp = CreateDefaultSubobject<UTargetingComp>(TEXT("TargetingComponent"));
 	m_TargetingComp->SetupAttachment(RootComponent);
 
 	// Setting Skill list
 	m_arrSKillComp.Init(nullptr, 4);
+}
+
+void ATpsCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	// BP에 적용된 SkillComp 리스트 가져오기
+	const auto& arrSkillComp = GetComponentsByClass(UBaseSkillComponent::StaticClass());
+	int tArrayPos = 0;
+	for (auto skill : arrSkillComp)
+	{
+		m_arrSKillComp.EmplaceAt(tArrayPos, Cast<UBaseSkillComponent>(skill));
+	}
+
+	// BP에 적용된 StatComp 가져오기
+	m_CharacterStatComp = Cast<UCharacterStatComp>(GetComponentByClass(UCharacterStatComp::StaticClass()));
 }
 
 void ATpsCharacter::BeginPlay()
@@ -60,13 +78,11 @@ void ATpsCharacter::BeginPlay()
 	m_eWeaponMode = EWeaponMode::Default;
 	SetTravelMode();
 
+	// 적용된 스킬셋 UI 출력
+	m_OnSkillChanged.Broadcast();
+
 	// TODO: Hp Bar 변경
 	// m_CharacterStatComp->OnHpChanged().AddUObject(this, &ATpsCharacter::);
-}
-
-void ATpsCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
 }
 
 void ATpsCharacter::Tick(float DeltaTime)
@@ -92,12 +108,14 @@ void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("KeyShift", IE_Pressed, this, &ATpsCharacter::Dash);
 //	PlayerInputComponent->BindAction("KeyShift", IE_Released, this, &ATpsCharacter::Dash);
 
-	PlayerInputComponent->BindAction("Key1", IE_Pressed, this, &ATpsCharacter::Skill1);
-	PlayerInputComponent->BindAction("Key2", IE_Pressed, this, &ATpsCharacter::Skill2);
+	PlayerInputComponent->BindAction("Key1", IE_Pressed, this, &ATpsCharacter::Skill1_Pressed);
+	PlayerInputComponent->BindAction("Key1", IE_Repeat, this, &ATpsCharacter::Skill1_Repeat);
+	PlayerInputComponent->BindAction("Key1", IE_Released, this, &ATpsCharacter::Skill1_Released);
+	PlayerInputComponent->BindAction("Key2", IE_Pressed, this, &ATpsCharacter::Skill2_Pressed);
+	PlayerInputComponent->BindAction("Key2", IE_Repeat, this, &ATpsCharacter::Skill2_Repeat);
+	PlayerInputComponent->BindAction("Key2", IE_Released, this, &ATpsCharacter::Skill2_Released);
 	PlayerInputComponent->BindAction("Key3", IE_Pressed, this, &ATpsCharacter::Skill3);
-	PlayerInputComponent->BindAction("Key4", IE_Pressed, this, &ATpsCharacter::Skill4_Pressed);
-	PlayerInputComponent->BindAction("Key4", IE_Repeat, this, &ATpsCharacter::Skill4_Repeat);
-	PlayerInputComponent->BindAction("Key4", IE_Released, this, &ATpsCharacter::Skill4_Released);
+	PlayerInputComponent->BindAction("Key4", IE_Pressed, this, &ATpsCharacter::Skill4);
 }
 
 void ATpsCharacter::MoveForward(float Value)
@@ -161,72 +179,83 @@ void ATpsCharacter::Dash()
 		SetActorRotation(YawRotation);
 	}
 
-	PlayAnimMontage(m_RollAnimation);
+	PlayAnimMontage(m_RollAnimation, m_CharacterStatComp->m_AttackSpeed);
 }
 
 void ATpsCharacter::Attack()
 {
 	if (m_CurrentWeapon != nullptr)
 	{
+		// 공격중인 경우, 회피 동작중인 경우
+		if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(m_CurrentWeapon->GetAttackMontage())) return;
+		else if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(m_RollAnimation)) return;
+
 		PlayAnimMontage(m_CurrentWeapon->GetAttackMontage()); // Item에서 가져올 수 있도록 설정
 	}
 }
 
-void ATpsCharacter::Skill1()
+void ATpsCharacter::Skill1_Pressed()
 {
 	auto skillComp = m_arrSKillComp[0];
-	if (skillComp == nullptr)
+	if (skillComp == nullptr || !skillComp->ActivateSkill())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Empty Skill"));
-		return;
+		auto InGameController = Cast<AInGamePlayerController>(GetController());
+		InGameController->GetInGameHUD()->PlayAnimSkillCoolTime1();
 	}
-
-	skillComp->ActivateSkill();
 }
 
-void ATpsCharacter::Skill2()
+void ATpsCharacter::Skill1_Repeat()
 {
-	WeaponSwitchRifle();
+	auto skillComp = m_arrSKillComp[0];
+	skillComp->RepeatSkill();
+}
 
+void ATpsCharacter::Skill1_Released()
+{
+	auto skillComp = m_arrSKillComp[0];
+	skillComp->ReleasedSkill();
+}
+
+void ATpsCharacter::Skill2_Pressed()
+{
 	auto skillComp = m_arrSKillComp[1];
-	if (skillComp == nullptr)
+	if (skillComp == nullptr || !skillComp->ActivateSkill())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Empty Skill"));
-		return;
+		auto InGameController = Cast<AInGamePlayerController>(GetController());
+		InGameController->GetInGameHUD()->PlayAnimSkillCoolTime2();
 	}
-	skillComp->ActivateSkill();
+}
+
+void ATpsCharacter::Skill2_Repeat()
+{
+	auto skillComp = m_arrSKillComp[1];
+	skillComp->RepeatSkill();
+}
+
+void ATpsCharacter::Skill2_Released()
+{
+	auto skillComp = m_arrSKillComp[1];
+	skillComp->ReleasedSkill();
 }
 
 void ATpsCharacter::Skill3()
 {
-	WeaponSwitchSword();
-
 	auto skillComp = m_arrSKillComp[2];
-	if (skillComp == nullptr)
+	if (skillComp == nullptr || !skillComp->ActivateSkill())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Empty Skill"));
-		return;
+		auto InGameController = Cast<AInGamePlayerController>(GetController());
+		InGameController->GetInGameHUD()->PlayAnimSkillCoolTime3();
 	}
-	skillComp->ActivateSkill();
 }
 
-void ATpsCharacter::Skill4_Pressed()
+void ATpsCharacter::Skill4()
 {
 	auto skillComp = m_arrSKillComp[3];
-	if (skillComp == nullptr)
+	if (skillComp == nullptr || !skillComp->ActivateSkill())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Empty Skill"));
-		return;
+		auto InGameController = Cast<AInGamePlayerController>(GetController());
+		InGameController->GetInGameHUD()->PlayAnimSkillCoolTime4();
 	}
-	skillComp->ActivateSkill();
-}
-
-void ATpsCharacter::Skill4_Repeat()
-{
-}
-
-void ATpsCharacter::Skill4_Released()
-{
 }
 
 void ATpsCharacter::Equip(TSubclassOf<AEquipItem> equipItemClass)
@@ -247,7 +276,7 @@ void ATpsCharacter::WeaponSwitchRifle()
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
 
-		UBaseSkillComponent* tSkill = NewObject<UBaseSkillComponent>(m_CurrentWeapon, m_CurrentWeapon->m_SkillCompClass, FName(TEXT("Skill1")));
+		UBaseSkillComponent* tSkill = NewObject<UBaseSkillComponent>(this, m_CurrentWeapon->m_SkillCompClass, FName(TEXT("Skill1")));
 		if (IsValid(tSkill))
 		{
 			tSkill->RegisterComponent();
@@ -300,8 +329,12 @@ float ATpsCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, A
 {
 	float resultDmg = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
-	m_CharacterStatComp->ReduceHp(resultDmg);
-	return resultDmg;
+	if (m_CharacterStatComp)
+	{
+		m_CharacterStatComp->ReduceHp(resultDmg);
+		return resultDmg;
+	}
+	return 0.f;
 }
 
 void ATpsCharacter::SetTpsMode()

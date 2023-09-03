@@ -44,7 +44,7 @@ private:
 	UPROPERTY(BlueprintReadOnly, Category = Inventory, Meta = (AllowPrivateAccess = true))
 	TArray<FInventoryStruct> m_arrInventory;
 
-	UPROPERTY(EditAnywhere, Category = Inventory, Meta = (UIMin = 5, UIMax = 15))
+	UPROPERTY(EditAnywhere, Category = Inventory, Meta = (UIMin = 20, UIMax = 60))
 	int m_nMaxInventorySize;
 
 public:

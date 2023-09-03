@@ -4,7 +4,8 @@
 #include "Player/InGamePlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
-#include "Blueprint/WidgetTree.h"
+#include "Components/Border.h"
+
 #include "Player/TpsCharacter.h"
 
 #include "UI/InGameHUD.h"
@@ -17,8 +18,8 @@ void AInGamePlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	InputComponent->BindAction("KeyEsc", IE_Pressed, this, &AInGamePlayerController::KeyESC);
 	InputComponent->BindAction("Inventory", IE_Pressed, this, &AInGamePlayerController::Inventory);
-	InputComponent->BindAction("Interaction", IE_Pressed, this, &AInGamePlayerController::Interaction);
 }
 
 void AInGamePlayerController::BeginPlay()
@@ -35,10 +36,8 @@ void AInGamePlayerController::OnPossess(APawn* InPawn)
 	// UI Setting
 	if (Inventory_UI)
 	{
-		m_ptrInventory = Cast<UUserWidget>(CreateWidget(GetWorld(), Inventory_UI));
-		m_ptrInventory->AddToViewport();
+		m_ptrInventory = Cast<UInventoryUI>(CreateWidget(GetWorld(), Inventory_UI));
 	}
-
 	if (InGameHUD_UI)
 	{
 		m_ptrInGameHUD = Cast<UInGameHUD>(CreateWidget(GetWorld(), InGameHUD_UI));
@@ -48,28 +47,32 @@ void AInGamePlayerController::OnPossess(APawn* InPawn)
 	// TODO: Character가 들고 있는 SkillComponent / UI_InGame SkillSlot 간에 바인딩 진행
 }
 
+void AInGamePlayerController::KeyESC()
+{	
+	// Inventory 열려있으면 제거
+	if (m_ptrInventory && m_ptrInventory->IsInViewport())
+	{
+		m_ptrInventory->Inventory->SetVisibility(ESlateVisibility::Hidden);
+		SetShowMouseCursor(false);
+		SetInputMode(FInputModeGameOnly{});
+	}
+}
+
 void AInGamePlayerController::Inventory()
 {
 	if (m_ptrInventory)
 	{
-		UWidget* inventory = m_ptrInventory->GetWidgetFromName(TEXT("InventoryMenu"));
-		switch (inventory->Visibility)
+		if (m_ptrInventory->IsInViewport())
 		{
-		case ESlateVisibility::Hidden:
-			inventory->SetVisibility(ESlateVisibility::Visible);
-			SetShowMouseCursor(true);
-			SetInputMode(FInputModeGameAndUI{});
-			break;
-		default:
-			inventory->SetVisibility(ESlateVisibility::Hidden);
+			m_ptrInventory->RemoveFromViewport();
 			SetShowMouseCursor(false);
 			SetInputMode(FInputModeGameOnly{});
-			break;
+		}
+		else
+		{
+			m_ptrInventory->AddToViewport();
+			SetShowMouseCursor(true);
+			SetInputMode(FInputModeGameAndUI{});
 		}
 	}
-}
-
-void AInGamePlayerController::Interaction()
-{
-	
 }

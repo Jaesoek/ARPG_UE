@@ -4,12 +4,14 @@
 #include "InGamePlayerState.h"
 #include "UI/InventorySlot.h"
 
+#include "Components/UniformGridPanel.h"
+#include "Components/UniformGridSlot.h"
+
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Blueprint/WidgetTree.h"
 
-
-void UInventoryUI::NativeConstruct()
+void UInventoryUI::NativeOnInitialized()
 {
 	// PlayerState 초기화
 	m_playerState = GetOwningPlayer()->GetPlayerState<AInGamePlayerState>();
@@ -21,42 +23,31 @@ void UInventoryUI::NativeConstruct()
 	m_nInventorySize = m_playerState->getInventory()->Max();
 	m_arrSlotInventory.Init(nullptr, m_nInventorySize);
 
-	// BP에서 미리 그려놓은 Slot을 m_arrSlotInventory에 연결
+	for (int i = 0; i < 60; i++)
 	{
-		TArray<UWidget*> arrAllWidget;
-		WidgetTree->GetAllWidgets(arrAllWidget);
+		auto InvenSlot = CreateWidget(this, m_InventorySlot_Class);
+		auto gridSlot = GridPanel->AddChildToUniformGrid(InvenSlot, i / 6, i % 6);
+		gridSlot->SetVerticalAlignment(EVerticalAlignment::VAlign_Fill);
+		gridSlot->SetHorizontalAlignment(EHorizontalAlignment::HAlign_Fill);
 
-		int nPosInventorySlot{};
-		for (auto widget : arrAllWidget)
+		if (i < m_nInventorySize)
 		{
-			if (widget->GetClass()->IsChildOf(UInventorySlot::StaticClass()))
-			{
-				if (nPosInventorySlot < m_nInventorySize)
-				{
-					m_arrSlotInventory[nPosInventorySlot] = Cast<UInventorySlot>(widget);
-					m_arrSlotInventory[nPosInventorySlot]->setSlotIndex(nPosInventorySlot);
+			m_arrSlotInventory[i] = Cast<UInventorySlot>(InvenSlot);
+			m_arrSlotInventory[i]->setSlotIndex(i);
 
-					widget->SetVisibility(ESlateVisibility::Visible);
-				}
-				else
-				{
-					widget->SetVisibility(ESlateVisibility::Hidden);
-				}
-
-				nPosInventorySlot++;
-			}
+			InvenSlot->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			InvenSlot->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
-
-
-	Super::NativeConstruct();
 }
 
 void UInventoryUI::RefreshInventoryUI()
 {
 	auto arrInventory = m_playerState->getInventory()->GetData();
 
-	// TODO: 추후 Event Driven 방식으로 변경 필요(현재는 Property Bind)
 	for (int i = 0; i < m_nInventorySize; ++i)
 	{
 		m_arrSlotInventory[i]->setTexture(arrInventory[i].texture);

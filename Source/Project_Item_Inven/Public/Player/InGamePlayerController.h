@@ -7,6 +7,7 @@
 #include "InGamePlayerController.generated.h"
 
 class UInGameHUD;
+class UInventoryUI;
 
 /**
  * 
@@ -30,15 +31,18 @@ private: // UI ¼³Á¤
 	TSubclassOf<UInGameHUD> InGameHUD_UI;
 
 	UPROPERTY(EditAnywhere, Category = UserInterface)
-	TSubclassOf<UUserWidget> Inventory_UI;
+	TSubclassOf<UInventoryUI> Inventory_UI;
 
 	UInGameHUD* m_ptrInGameHUD;
-	UUserWidget* m_ptrInventory;
+	UInventoryUI* m_ptrInventory;
 
-public:
+private:
+	/* Bind to key event "Inventory" */
+	void KeyESC();
+
 	/* Bind to key event "Inventory" */
 	void Inventory();
 
-	/* Bind to key event "Interaction" */
-	void Interaction();
+public:
+	FORCEINLINE UInGameHUD* GetInGameHUD() const { return m_ptrInGameHUD; };
 };

@@ -12,7 +12,8 @@ class PROJECT_ITEM_INVEN_API UBaseSkillComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	class ATpsCharacter* m_ActorOwner;
+	UPROPERTY(BlueprintReadOnly, Category = Owner, Transient)
+	class ATpsCharacter* m_OwnerCharcter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation)
 	UAnimMontage* m_AnimMontage;
@@ -20,16 +21,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = Thumbnail)
 	UTexture2D* m_Texture;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Status, Meta = (AllowPrivateAccess = true, ClampMin = "0.0", UIMin = "0.0"))
-	float m_fMaxCoolTime;
-	float m_fCoolTime;
-
+	// CoolTime
 public:
 	DECLARE_EVENT_OneParam(UBaseSkillComponent, FCoolTimeDelegate, float);
 	FCoolTimeDelegate& OnCoolTIme() { return m_OnCoolTime; }
 private:
 	FCoolTimeDelegate m_OnCoolTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Status, Meta = (AllowPrivateAccess = true, ClampMin = "0.0", UIMin = "0.0"))
+	float m_fMaxCoolTime;
+	float m_fCoolTime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Status, Meta = (AllowPrivateAccess = true))
+	bool m_IsCasting;
 
 	// TODO: 스킬의 기능 : Buff? 공격기 발사? 방패 소환?
 	
@@ -42,6 +46,7 @@ protected:
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void PostLoad() override;
 
 public:
 	const float GetCoolTime() const;
@@ -54,10 +59,10 @@ public:  // Input 에 대응되는 로직 리스트(Pressed, Repeat, Released)
 	virtual bool ActivateSkill_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void RepeatSkill();
-	virtual void RepeatSkill_Implementation();
+	bool RepeatSkill();
+	virtual bool RepeatSkill_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent)
-	void ReleasedSkill();
-	virtual void ReleasedSkill_Implementation();
+	bool ReleasedSkill();
+	virtual bool ReleasedSkill_Implementation();
 };

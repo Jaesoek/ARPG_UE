@@ -11,6 +11,9 @@ class PROJECT_ITEM_INVEN_API UCharacterStatComp : public UActorComponent
 {
 	GENERATED_BODY()
 
+	// It can't created alone
+	friend class ATpsCharacter;
+
 public:	
 	UCharacterStatComp();
 
@@ -27,16 +30,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = Status, meta = (ClampMin = "0.0", UIMin = "0.0"))
 	int m_HpMax;
 
-	UPROPERTY(Transient, EditDefaultsOnly, Category = Status, meta = (ClampMin = "0.0", UIMin = "0.0"))
+	UPROPERTY(EditDefaultsOnly, Category = Status, meta = (ClampMin = "0.0", UIMin = "0.0"))
 	int m_SpMax;
 
-	UPROPERTY(Transient, EditDefaultsOnly, Category = Status, meta = (ClampMin = "0", ClampMax = "100", UIMin = "0", UIMax = "100"))
+	UPROPERTY(EditDefaultsOnly, Category = Status, meta = (ClampMin = "0", ClampMax = "100", UIMin = "0", UIMax = "100"))
 	int m_CriticalRate;
 
 	UPROPERTY(Transient, EditDefaultsOnly, Category = Status, meta = (ClampMin = "0", UIMin = "0"))
 	int m_CriticalDamage;
 
-	UPROPERTY(Transient, EditDefaultsOnly, Category = Status, meta = (ClampMin = "0.0", UIMin = "0.0"))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = Status, meta = (ClampMin = "0.0", UIMin = "1.0", AllowPrivateAccess = true))
 	float m_AttackSpeed;
 
 public:
@@ -63,10 +66,10 @@ public:
 	// Return remain Sp
 	int ReduceSp(int damage);
 
-	// Return now Attack Speed
-	int AddAttackSpeed(int attackSpeed);
-	// Return now Attack Speed
-	int ReduceAttackSpeed(int attackSpeed);
+	UFUNCTION(BlueprintCallable)
+	float AddAttackSpeed(float atackSpeed);
+	UFUNCTION(BlueprintCallable)
+	float ReduceAttackSpeed(float atackSpeed);
 
 public:
 	DECLARE_EVENT_TwoParams(UCharacterStatComp, FHpChangeDelegate, int, bool);

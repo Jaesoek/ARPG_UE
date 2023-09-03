@@ -3,9 +3,12 @@
 
 #include "UI/InGameHUD.h"
 #include "UI/SkillSlot.h"
+#include "UI/BuffCoolTimeSlot.h"
 
 #include "Player/TpsCharacter.h"
 #include "Skill/BaseSkillComponent.h"
+
+#include "Components/HorizontalBox.h"
 
 void UInGameHUD::NativeOnInitialized()
 {
@@ -41,5 +44,29 @@ void UInGameHUD::BindSkill()
 	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[1], Skill_Slot_2);
 	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[2], Skill_Slot_3);
 	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[3], Skill_Slot_4);
+}
+
+void UInGameHUD::AddBuffCoolTime(UBaseSkillComponent* skillComp)
+{
+	auto widget = CreateWidget<UBuffCoolTimeSlot>(this, m_BuffCoolTimeSlot_Class);
+	widget->m_ptrTexture = skillComp->m_Texture;
+	HorizontalBox_BuffSkill->AddChildToHorizontalBox(widget);
+}
+
+UUMGSequencePlayer* UInGameHUD::PlayAnimSkillCoolTime1()
+{
+	return PlayAnimation(Anim_Skill_CoolTime_1);
+}
+UUMGSequencePlayer* UInGameHUD::PlayAnimSkillCoolTime2()
+{
+	return PlayAnimation(Anim_Skill_CoolTime_2);
+}
+UUMGSequencePlayer* UInGameHUD::PlayAnimSkillCoolTime3()
+{
+	return PlayAnimation(Anim_Skill_CoolTime_3);
+}
+UUMGSequencePlayer* UInGameHUD::PlayAnimSkillCoolTime4()
+{
+	return PlayAnimation(Anim_Skill_CoolTime_4);
 }
 

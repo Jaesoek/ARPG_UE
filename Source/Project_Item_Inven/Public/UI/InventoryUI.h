@@ -16,19 +16,30 @@ UCLASS(Abstract)
 class PROJECT_ITEM_INVEN_API UInventoryUI : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
-	virtual void NativeConstruct() override;
+	// Widgets
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UBorder* Inventory;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UUniformGridPanel* GridPanel;
 
 private:
+	UPROPERTY(EditAnywhere, Category = CustomUISlot)
+	TSubclassOf<UInventorySlot> m_InventorySlot_Class;
+
+private:
+	AInGamePlayerState* m_playerState;
+
 	UPROPERTY(BlueprintReadWrite, Category = Inventory, Meta = (AllowPrivateAccess = true))
 	TArray<UInventorySlot*> m_arrSlotInventory;
 
 	UPROPERTY(BlueprintReadOnly, Category = Inventory, Meta = (AllowPrivateAccess = true))
 	int m_nInventorySize;
 
-private:
-	AInGamePlayerState* m_playerState;
+public:
+	virtual void NativeOnInitialized() override;
 
 private:
 	UFUNCTION()

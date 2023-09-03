@@ -8,11 +8,12 @@
 
 class ATpsCharacter;
 class USkillSlot;
+class UBuffCoolTimeSlot;
 
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class PROJECT_ITEM_INVEN_API UInGameHUD : public UUserWidget
 {
 	GENERATED_BODY()
@@ -34,7 +35,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UHorizontalBox* HorizontalBox_Skill;
 
-	// Skill slots
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UHorizontalBox* HorizontalBox_BuffSkill;
+
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	USkillSlot* Skill_Slot_1;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -54,6 +57,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* Animation_Heal_Progress;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* Anim_Skill_CoolTime_1;
+	
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* Anim_Skill_CoolTime_2;
+	
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* Anim_Skill_CoolTime_3;
+	
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* Anim_Skill_CoolTime_4;
+
+private:
+	UPROPERTY(EditAnywhere, Category = CustomUISlot)
+	TSubclassOf<UBuffCoolTimeSlot> m_BuffCoolTimeSlot_Class;
+
+
 private:
 	// TpsCharacter
 	ATpsCharacter* m_pPlayerChar;
@@ -65,4 +85,14 @@ private:
 
 private:
 	void BindSkill();
+
+public:
+	void AddBuffCoolTime(UBaseSkillComponent* skillComp);
+
+public:
+	UUMGSequencePlayer* PlayAnimSkillCoolTime1();
+	UUMGSequencePlayer* PlayAnimSkillCoolTime2();
+	UUMGSequencePlayer* PlayAnimSkillCoolTime3();
+	UUMGSequencePlayer* PlayAnimSkillCoolTime4();
+
 };

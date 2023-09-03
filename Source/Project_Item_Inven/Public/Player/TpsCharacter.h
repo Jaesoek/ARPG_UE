@@ -95,8 +95,8 @@ public:
 	ATpsCharacter();
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
+	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
@@ -113,12 +113,14 @@ protected: // Logics about key,mouse Input
 
 	void Attack();
 
-	void Skill1();
-	void Skill2();
+	void Skill1_Pressed();
+	void Skill1_Repeat();
+	void Skill1_Released();
+	void Skill2_Pressed();
+	void Skill2_Repeat();
+	void Skill2_Released();
 	void Skill3();
-	void Skill4_Pressed();
-	void Skill4_Repeat();
-	void Skill4_Released();
+	void Skill4();
 
 protected: // Logics about key,mouse Input
 	void Equip(TSubclassOf<AEquipItem> equipItemClass);
@@ -129,6 +131,8 @@ protected: // Logics about key,mouse Input
 	void FocusEnemyOnOff();
 	void FocusEnemySwitch();
 
+public:
+	class UCharactrStat* GetCharacterStat() const;
 
 public:
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;

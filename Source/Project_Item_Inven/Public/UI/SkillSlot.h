@@ -18,7 +18,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (BindWidget))
 	class UProgressBar* m_ProgressCoolTime;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* Anim_CoolTime;
+
 public:
 	void UpdateCoolTimePercent(float fPercent);
 	void SetSlotIcon(UTexture2D* thumbnail);
+
 };

@@ -8,6 +8,10 @@
 
 void USkillSlot::UpdateCoolTimePercent(float fPercent)
 {
+	if (m_ProgressCoolTime->Percent > FLT_EPSILON && 1.f - fPercent <= FLT_EPSILON)
+	{
+		PlayAnimation(Anim_CoolTime);
+	}
 	m_ProgressCoolTime->SetPercent(1.f - fPercent);
 }
 

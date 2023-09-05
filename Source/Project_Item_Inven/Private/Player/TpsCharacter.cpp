@@ -121,7 +121,7 @@ void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 void ATpsCharacter::MoveForward(float Value)
 {
 	m_fInputForward = Value;
-	if ((Controller != nullptr) && (m_fInputForward != 0.0f)) // float 은 기본적으로 0 비교시 >< 부등호를 사용하지만 변경이 적기 때문에 걍 0.0f ==로 처리
+	if ((Controller != nullptr) && (m_fInputForward != 0.0f))
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -179,7 +179,7 @@ void ATpsCharacter::Dash()
 		SetActorRotation(YawRotation);
 	}
 
-	PlayAnimMontage(m_RollAnimation, m_CharacterStatComp->m_AttackSpeed);
+	PlayAnimMontage(m_RollAnimation, m_CharacterStatComp->GetAttackSpeed());
 }
 
 void ATpsCharacter::Attack()
@@ -275,14 +275,6 @@ void ATpsCharacter::WeaponSwitchRifle()
 		m_WeaponActorComp->SetChildActorClass(playerState->m_Rifle);
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
-
-		UBaseSkillComponent* tSkill = NewObject<UBaseSkillComponent>(this, m_CurrentWeapon->m_SkillCompClass, FName(TEXT("Skill1")));
-		if (IsValid(tSkill))
-		{
-			tSkill->RegisterComponent();
-			m_arrSKillComp.EmplaceAt(0, tSkill);
-			m_OnSkillChanged.Broadcast();
-		}
 	}
 }
 
@@ -299,6 +291,7 @@ void ATpsCharacter::WeaponSwitchSword()
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
 
+		/* Skill 생성 및 적용
 		UBaseSkillComponent* tSkill = NewObject<UBaseSkillComponent>(m_CurrentWeapon, m_CurrentWeapon->m_SkillCompClass, FName(TEXT("Skill1")));
 		if (IsValid(tSkill))
 		{
@@ -306,6 +299,7 @@ void ATpsCharacter::WeaponSwitchSword()
 			m_arrSKillComp.EmplaceAt(0, tSkill);
 			m_OnSkillChanged.Broadcast();
 		}
+		*/
 	}
 }
 

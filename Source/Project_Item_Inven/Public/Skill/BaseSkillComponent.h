@@ -6,12 +6,21 @@
 #include "Components/ActorComponent.h"
 #include "BaseSkillComponent.generated.h"
 
+UENUM(BlueprintType)
+enum class ESkillType : uint8
+{
+	Default, Buff, Casting
+};
+
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECT_ITEM_INVEN_API UBaseSkillComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, Category = Status)
+	ESkillType m_eSkillType;
+
 	UPROPERTY(BlueprintReadOnly, Category = Owner, Transient)
 	class ATpsCharacter* m_OwnerCharcter;
 
@@ -35,8 +44,6 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Status, Meta = (AllowPrivateAccess = true))
 	bool m_IsCasting;
 
-	// TODO: 스킬의 기능 : Buff? 공격기 발사? 방패 소환?
-	
 
 public:	
 	UBaseSkillComponent();

@@ -58,9 +58,9 @@ private:
 	bool m_bTargetingMode;
 
 private:
-	/** Input right */
+	/** Input right only for assignment */
 	float m_fInputRight;
-	/** Input forward */
+	/** only for assignment */
 	float m_fInputForward;
 
 
@@ -137,8 +137,11 @@ public:
 public:
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
-private: // Camera mode setting
+public: // Camera mode setting
+	UFUNCTION(BlueprintCallable)
 	void SetTpsMode();
+
+	UFUNCTION(BlueprintCallable)
 	void SetTravelMode();
 
 };

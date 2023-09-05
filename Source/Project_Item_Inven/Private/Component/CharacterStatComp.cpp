@@ -7,6 +7,11 @@ UCharacterStatComp::UCharacterStatComp()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
+	m_mapHpMax = TMap<FString, int>{};
+	m_mapATKMax = TMap<FString, int>{};
+	m_mapCriticalRate = TMap<FString, int>{};
+	m_mapCriticalDamage = TMap<FString, int>{};
+	m_mapAttackSpeed = TMap<FString, float>{};
 }
 
 
@@ -23,38 +28,69 @@ void UCharacterStatComp::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 }
 
+int UCharacterStatComp::GetMaxHp() const
+{
+	int result = m_HpMax_Base;
+	for (const auto& HpBuff : m_mapHpMax)
+		result += HpBuff.Value;
+	return result;
+}
+
+int UCharacterStatComp::GetATK() const
+{
+	int result = m_ATK_Base;
+	for (const auto& ATKBuff : m_mapATKMax)
+		result += ATKBuff.Value;
+	return result;
+}
+
+int UCharacterStatComp::GetCriticalRate() const
+{
+	int result = m_CriticalRate_Base;
+	for (const auto& CriRateBuff : m_mapCriticalRate)
+		result += CriRateBuff.Value;
+	if (result > 100) result = 100;
+	return result;
+}
+
+int UCharacterStatComp::GetCriticalDmg() const
+{
+	int result = m_CriticalDamage_Base;
+	for (const auto& CriDmgBuff : m_mapCriticalDamage)
+		result += CriDmgBuff.Value;
+	return result;
+}
+
+float UCharacterStatComp::GetAttackSpeed() const
+{
+	float result = m_AttackSpeed_Base;
+	for (const auto& AttackSpeedBuff : m_mapAttackSpeed)
+		result += AttackSpeedBuff.Value;
+	return result;
+}
+
 int UCharacterStatComp::AddHp(int heal)
 {
-	m_HpCurrent = FMath::Clamp<int>(m_HpCurrent + heal, 0, m_HpMax);
-
+	m_HpCurrent = FMath::Clamp<int>(m_HpCurrent + heal, 0, GetMaxHp());
 	m_OnHpChanged.Broadcast(m_HpCurrent, true);
 	return m_HpCurrent;
 }
 
 int UCharacterStatComp::ReduceHp(int damage)
 {
-	m_HpCurrent = FMath::Clamp<int>(m_HpCurrent - damage, 0, m_HpMax);
-
+	m_HpCurrent = FMath::Clamp<int>(m_HpCurrent - damage, 0, GetMaxHp());
 	m_OnHpChanged.Broadcast(m_HpCurrent, false);
 	return m_HpCurrent;
 }
 
-int UCharacterStatComp::AddSp(int heal)
+float UCharacterStatComp::AddAttackSpeed(FString name, float attackSpeed)
 {
-	return m_SpCurrent;
+	m_mapAttackSpeed.Add(TTuple<FString, float>{name, attackSpeed});
+	return GetAttackSpeed();
 }
 
-int UCharacterStatComp::ReduceSp(int damage)
+float UCharacterStatComp::ClearAttackSpeed(FString name)
 {
-	return m_SpCurrent;
-}
-
-float UCharacterStatComp::AddAttackSpeed(float attackSpeed)
-{
-	return m_AttackSpeed += attackSpeed;
-}
-
-float UCharacterStatComp::ReduceAttackSpeed(float attackSpeed)
-{
-	return m_AttackSpeed -= attackSpeed;
+	m_mapAttackSpeed.Remove(name);
+	return GetAttackSpeed();
 }

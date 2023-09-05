@@ -30,9 +30,6 @@ public:
 	class UProgressBar* progress_hp;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* progress_sp;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UHorizontalBox* HorizontalBox_Skill;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -87,7 +84,7 @@ private:
 	void BindSkill();
 
 public:
-	void AddBuffCoolTime(UBaseSkillComponent* skillComp);
+	void AddBuffCoolTime(class UBaseSkillComponent* skillComp);
 
 public:
 	UUMGSequencePlayer* PlayAnimSkillCoolTime1();

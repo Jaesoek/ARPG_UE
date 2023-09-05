@@ -25,35 +25,37 @@ public:
 
 private:
 	int m_HpCurrent;
-	int m_SpCurrent;
 
-	UPROPERTY(EditAnywhere, Category = Status, meta = (ClampMin = "0.0", UIMin = "0.0"))
-	int m_HpMax;
+	UPROPERTY(EditAnywhere, Category = "Base Stat", meta = (ClampMin = "0", UIMin = "0"))
+	int m_HpMax_Base;
 
-	UPROPERTY(EditDefaultsOnly, Category = Status, meta = (ClampMin = "0.0", UIMin = "0.0"))
-	int m_SpMax;
+	UPROPERTY(EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0", UIMin = "0"))
+	int m_ATK_Base;
 
-	UPROPERTY(EditDefaultsOnly, Category = Status, meta = (ClampMin = "0", ClampMax = "100", UIMin = "0", UIMax = "100"))
-	int m_CriticalRate;
+	UPROPERTY(EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0", ClampMax = "100", UIMin = "0", UIMax = "100"))
+	int m_CriticalRate_Base;
 
-	UPROPERTY(Transient, EditDefaultsOnly, Category = Status, meta = (ClampMin = "0", UIMin = "0"))
-	int m_CriticalDamage;
+	UPROPERTY(Transient, EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0", UIMin = "0"))
+	int m_CriticalDamage_Base;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = Status, meta = (ClampMin = "0.0", UIMin = "1.0", AllowPrivateAccess = true))
-	float m_AttackSpeed;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0.2", UIMin = "1.0", AllowPrivateAccess = true))
+	float m_AttackSpeed_Base;
+
+	TMap<FString, int> m_mapHpMax;
+	TMap<FString, int> m_mapATKMax;
+	TMap<FString, int> m_mapCriticalRate;
+	TMap<FString, int> m_mapCriticalDamage;
+	TMap<FString, float> m_mapAttackSpeed;
 
 public:
 	FORCEINLINE int GetHp() const { return m_HpCurrent; }
-	FORCEINLINE int GetSp() const { return m_SpCurrent; }
-	FORCEINLINE int GetCriticalRate() const { return m_CriticalRate; }
-	FORCEINLINE int GetCriticalDmg() const { return m_CriticalDamage; }
-	FORCEINLINE float GetAttackSpeed() const { return m_AttackSpeed; }
 
-	FORCEINLINE void SetHp(int hp) { m_HpCurrent = hp; }
-	FORCEINLINE void SetSp(int sp) { m_SpCurrent = sp; }
-	FORCEINLINE void SetCriticalRate(int criticalRate) { m_CriticalRate = criticalRate; }
-	FORCEINLINE void SetCriticalDmg(int criticalDmg) { m_CriticalDamage = criticalDmg; }
-	FORCEINLINE void SetAttackSpeed(float attackSpeed) { m_AttackSpeed = attackSpeed; }
+	int GetMaxHp() const;
+	int GetATK() const;
+	int GetCriticalRate() const;
+	int GetCriticalDmg() const;
+	UFUNCTION(BlueprintCallable)
+	float GetAttackSpeed() const;
 
 public:
 	// Return remain Hp
@@ -61,20 +63,15 @@ public:
 	// Return remain Hp
 	int ReduceHp(int damage);
 
-	// Return remain Sp
-	int AddSp(int heal);
-	// Return remain Sp
-	int ReduceSp(int damage);
+	UFUNCTION(BlueprintCallable)
+	float AddAttackSpeed(FString name, float attackSpeed);
 
 	UFUNCTION(BlueprintCallable)
-	float AddAttackSpeed(float atackSpeed);
-	UFUNCTION(BlueprintCallable)
-	float ReduceAttackSpeed(float atackSpeed);
+	float ClearAttackSpeed(FString name);
 
 public:
 	DECLARE_EVENT_TwoParams(UCharacterStatComp, FHpChangeDelegate, int, bool);
 	FHpChangeDelegate& OnHpChanged() { return m_OnHpChanged; }
-
 private:
 	FHpChangeDelegate m_OnHpChanged;
 

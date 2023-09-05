@@ -82,6 +82,7 @@ private:
 
 private:
 	void BindSkill();
+	void EditHpProgress(float currentHp, bool isHeal);
 
 public:
 	void AddBuffCoolTime(class UBaseSkillComponent* skillComp);

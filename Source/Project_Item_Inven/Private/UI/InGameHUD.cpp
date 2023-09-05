@@ -5,10 +5,13 @@
 #include "UI/SkillSlot.h"
 #include "UI/BuffCoolTimeSlot.h"
 
+#include "Components/ProgressBar.h"
+#include "Components/HorizontalBox.h"
+
 #include "Player/TpsCharacter.h"
 #include "Skill/BaseSkillComponent.h"
+#include "Component/CharacterStatComp.h"
 
-#include "Components/HorizontalBox.h"
 
 void UInGameHUD::NativeOnInitialized()
 {
@@ -16,6 +19,8 @@ void UInGameHUD::NativeOnInitialized()
 
 	m_pPlayerChar = GetOwningPlayerPawn<ATpsCharacter>();
 	m_pPlayerChar->OnSkillChanged().AddUObject(this, &UInGameHUD::BindSkill);
+	if (m_pPlayerChar->GetCharacterStat())
+		m_pPlayerChar->GetCharacterStat()->OnHpChanged().AddUObject(this, &UInGameHUD::EditHpProgress);
 }
 
 void UInGameHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -28,6 +33,7 @@ void _BindSkillLogic(UBaseSkillComponent* skillComp, USkillSlot* skillSlot)
 	if (IsValid(skillComp))
 	{
 		skillComp->OnCoolTIme().AddUObject(skillSlot, &USkillSlot::UpdateCoolTimePercent);
+		skillComp->RefreshCoolTimeDelegate();
 		skillSlot->SetSlotIcon(skillComp->m_Texture);
 	}
 	else
@@ -44,6 +50,12 @@ void UInGameHUD::BindSkill()
 	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[1], Skill_Slot_2);
 	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[2], Skill_Slot_3);
 	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[3], Skill_Slot_4);
+}
+
+void UInGameHUD::EditHpProgress(float currentHp, bool isHeal)
+{
+	float percent = currentHp / m_pPlayerChar->GetCharacterStat()->GetMaxHp();
+	progress_hp->SetPercent(percent);
 }
 
 void UInGameHUD::AddBuffCoolTime(UBaseSkillComponent* skillComp)

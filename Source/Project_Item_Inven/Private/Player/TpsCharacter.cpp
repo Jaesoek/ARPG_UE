@@ -80,9 +80,6 @@ void ATpsCharacter::BeginPlay()
 
 	// 적용된 스킬셋 UI 출력
 	m_OnSkillChanged.Broadcast();
-
-	// TODO: Hp Bar 변경
-	// m_CharacterStatComp->OnHpChanged().AddUObject(this, &ATpsCharacter::);
 }
 
 void ATpsCharacter::Tick(float DeltaTime)
@@ -109,10 +106,8 @@ void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 //	PlayerInputComponent->BindAction("KeyShift", IE_Released, this, &ATpsCharacter::Dash);
 
 	PlayerInputComponent->BindAction("Key1", IE_Pressed, this, &ATpsCharacter::Skill1_Pressed);
-	PlayerInputComponent->BindAction("Key1", IE_Repeat, this, &ATpsCharacter::Skill1_Repeat);
 	PlayerInputComponent->BindAction("Key1", IE_Released, this, &ATpsCharacter::Skill1_Released);
 	PlayerInputComponent->BindAction("Key2", IE_Pressed, this, &ATpsCharacter::Skill2_Pressed);
-	PlayerInputComponent->BindAction("Key2", IE_Repeat, this, &ATpsCharacter::Skill2_Repeat);
 	PlayerInputComponent->BindAction("Key2", IE_Released, this, &ATpsCharacter::Skill2_Released);
 	PlayerInputComponent->BindAction("Key3", IE_Pressed, this, &ATpsCharacter::Skill3);
 	PlayerInputComponent->BindAction("Key4", IE_Pressed, this, &ATpsCharacter::Skill4);
@@ -128,6 +123,7 @@ void ATpsCharacter::MoveForward(float Value)
 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, m_fInputForward);
+		OnCharacterMove.ExecuteIfBound();
 	}
 }
 
@@ -141,6 +137,7 @@ void ATpsCharacter::MoveRight(float Value)
 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, m_fInputRight);
+		OnCharacterMove.ExecuteIfBound();
 	}
 }
 
@@ -149,6 +146,7 @@ void ATpsCharacter::Turn(float NewAxisValue)
 	if (!m_bTargetingMode && NewAxisValue != 0.0f)
 	{
 		AddControllerYawInput(NewAxisValue);
+		OnCharacterMove.ExecuteIfBound();
 	}
 }
 
@@ -157,6 +155,7 @@ void ATpsCharacter::LookUp(float NewAxisValue)
 	if (!m_bTargetingMode && NewAxisValue != 0.0f)
 	{
 		AddControllerPitchInput(NewAxisValue * 0.5f);
+		OnCharacterMove.ExecuteIfBound();
 	}
 }
 
@@ -190,7 +189,7 @@ void ATpsCharacter::Attack()
 		if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(m_CurrentWeapon->GetAttackMontage())) return;
 		else if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(m_RollAnimation)) return;
 
-		PlayAnimMontage(m_CurrentWeapon->GetAttackMontage()); // Item에서 가져올 수 있도록 설정
+		PlayAnimMontage(m_CurrentWeapon->GetAttackMontage(), m_CharacterStatComp->GetAttackSpeed()); // Item에서 가져올 수 있도록 설정
 	}
 }
 
@@ -204,16 +203,11 @@ void ATpsCharacter::Skill1_Pressed()
 	}
 }
 
-void ATpsCharacter::Skill1_Repeat()
-{
-	auto skillComp = m_arrSKillComp[0];
-	skillComp->RepeatSkill();
-}
-
 void ATpsCharacter::Skill1_Released()
 {
 	auto skillComp = m_arrSKillComp[0];
-	skillComp->ReleasedSkill();
+	if (skillComp != nullptr)
+		skillComp->ReleasedSkill();
 }
 
 void ATpsCharacter::Skill2_Pressed()
@@ -226,16 +220,11 @@ void ATpsCharacter::Skill2_Pressed()
 	}
 }
 
-void ATpsCharacter::Skill2_Repeat()
-{
-	auto skillComp = m_arrSKillComp[1];
-	skillComp->RepeatSkill();
-}
-
 void ATpsCharacter::Skill2_Released()
 {
 	auto skillComp = m_arrSKillComp[1];
-	skillComp->ReleasedSkill();
+	if (skillComp != nullptr)
+		skillComp->ReleasedSkill();
 }
 
 void ATpsCharacter::Skill3()

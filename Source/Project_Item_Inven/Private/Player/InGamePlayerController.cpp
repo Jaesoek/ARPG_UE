@@ -43,8 +43,6 @@ void AInGamePlayerController::OnPossess(APawn* InPawn)
 		m_ptrInGameHUD = Cast<UInGameHUD>(CreateWidget(GetWorld(), InGameHUD_UI));
 		m_ptrInGameHUD->AddToViewport();
 	}
-	
-	// TODO: Character가 들고 있는 SkillComponent / UI_InGame SkillSlot 간에 바인딩 진행
 }
 
 void AInGamePlayerController::KeyESC()

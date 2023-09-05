@@ -17,24 +17,6 @@ void UBaseSkillComponent::BeginPlay()
 	SetCoolTime(m_fMaxCoolTime);
 }
 
-void UBaseSkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if (!m_IsCasting)
-	{
-		// Cool time
-		if (m_fCoolTime < m_fMaxCoolTime)
-		{
-			SetCoolTime(m_fCoolTime + DeltaTime);
-		}
-		else if (m_fCoolTime >= m_fMaxCoolTime)
-		{
-			SetCoolTime(m_fMaxCoolTime);
-		}
-	}
-}
-
 void UBaseSkillComponent::PostLoad()
 {
 	Super::PostLoad();
@@ -53,35 +35,24 @@ void UBaseSkillComponent::SetCoolTime(float fCoolTime)
 	m_OnCoolTime.Broadcast(m_fCoolTime / m_fMaxCoolTime);
 }
 
-bool UBaseSkillComponent::ActivateSkill_Implementation()
+void UBaseSkillComponent::RefreshCoolTimeDelegate()
 {
-	if (m_OwnerCharcter == nullptr)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("No owner"));
-		return false;
-	}
-	else if (m_fCoolTime < m_fMaxCoolTime)
-	{
-		return false;
-	}
-
-	SetCoolTime(0.f);
-	return true;
+	m_OnCoolTime.Broadcast(m_fCoolTime / m_fMaxCoolTime);
 }
 
-bool UBaseSkillComponent::RepeatSkill_Implementation()
+bool UBaseSkillComponent::ActivateSkill()
 {
-	return true;
+	check(0 && "You must override this");
+	return false;
 }
 
-bool UBaseSkillComponent::ReleasedSkill_Implementation()
+bool UBaseSkillComponent::ReleasedSkill()
 {
-	if (!m_IsCasting)
-	{
-		return false;
-	}
-
-	m_IsCasting = false;
-	return true;
+	check(0 && "You must override this");
+	return false;
 }
 
+void UBaseSkillComponent::CastingSkill()
+{
+	check(0 && "You must override this");
+}

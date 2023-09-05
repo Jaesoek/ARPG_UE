@@ -27,7 +27,7 @@ ABaseItem::ABaseItem()
 	m_MeshComponent->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 
 	m_ItemDropComponent = NewObject<UItemDropComponent>(this, TEXT("ItemDropComp"));
-	m_ItemDropComponent->RegisterComponent();
+//	m_ItemDropComponent->RegisterComponent();
 //	AddInstanceComponent(m_ItemDropComponent);
 }
 

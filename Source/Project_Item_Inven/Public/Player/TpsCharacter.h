@@ -11,6 +11,10 @@ enum class EWeaponMode : uint8
 	Default, Sword, Rifle
 };
 
+DECLARE_DELEGATE(FOnCharacterMove);
+DECLARE_DELEGATE(FCharacterMoveOnlyMouse);
+DECLARE_DELEGATE(FCharacterMoveOnlyKey);
+
 UCLASS(Abstract)
 class PROJECT_ITEM_INVEN_API ATpsCharacter : public ACharacter
 {
@@ -50,6 +54,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, Meta = (AllowPrivateAccess = true))
 	class UCharacterStatComp* m_CharacterStatComp;
 
+private:
 	UPROPERTY(EditAnywhere, Category = Targeting)
 	class UTargetingComp* m_TargetingComp;
 
@@ -63,6 +68,11 @@ private:
 	/** only for assignment */
 	float m_fInputForward;
 
+public:
+	FOnCharacterMove OnCharacterMove;
+
+public:
+	FORCEINLINE class UCharacterStatComp* GetCharacterStat() { return m_CharacterStatComp; };
 
 public: // Skill List
 	UPROPERTY(EditAnywhere, Category = Skill)
@@ -73,7 +83,6 @@ public: // Skill List
 
 private:
 	FSkillChangeDelegate m_OnSkillChanged;
-
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
@@ -114,10 +123,8 @@ protected: // Logics about key,mouse Input
 	void Attack();
 
 	void Skill1_Pressed();
-	void Skill1_Repeat();
 	void Skill1_Released();
 	void Skill2_Pressed();
-	void Skill2_Repeat();
 	void Skill2_Released();
 	void Skill3();
 	void Skill4();
@@ -130,9 +137,6 @@ protected: // Logics about key,mouse Input
 
 	void FocusEnemyOnOff();
 	void FocusEnemySwitch();
-
-public:
-	class UCharactrStat* GetCharacterStat() const;
 
 public:
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;

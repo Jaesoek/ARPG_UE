@@ -7,7 +7,8 @@ UCharacterStatComp::UCharacterStatComp()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
-	m_mapHpMax = TMap<FString, int>{};
+	m_mapHpMax = TMap<FString, float>{};
+	m_mapHpRecovery = TMap<FString, float>{};
 	m_mapATKMax = TMap<FString, int>{};
 	m_mapCriticalRate = TMap<FString, int>{};
 	m_mapCriticalDamage = TMap<FString, int>{};
@@ -26,13 +27,25 @@ void UCharacterStatComp::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (GetMaxHp() > GetHp()) // Auto recovery
+		AddHp(GetHpRecovery() * DeltaTime);
 }
 
-int UCharacterStatComp::GetMaxHp() const
+float UCharacterStatComp::GetMaxHp() const
 {
-	int result = m_HpMax_Base;
+	float result = m_HpMax_Base;
 	for (const auto& HpBuff : m_mapHpMax)
 		result += HpBuff.Value;
+	return result;
+}
+
+float UCharacterStatComp::GetHpRecovery() const
+{
+	float result = m_HpRecovery_Base;
+	for (const auto& HpRecovBuff : m_mapHpRecovery)
+	{
+		result += HpRecovBuff.Value;
+	}
 	return result;
 }
 
@@ -69,16 +82,16 @@ float UCharacterStatComp::GetAttackSpeed() const
 	return result;
 }
 
-int UCharacterStatComp::AddHp(int heal)
+float UCharacterStatComp::AddHp(float heal)
 {
-	m_HpCurrent = FMath::Clamp<int>(m_HpCurrent + heal, 0, GetMaxHp());
+	m_HpCurrent = FMath::Clamp<float>(m_HpCurrent + heal, 0.f, GetMaxHp());
 	m_OnHpChanged.Broadcast(m_HpCurrent, true);
 	return m_HpCurrent;
 }
 
-int UCharacterStatComp::ReduceHp(int damage)
+float UCharacterStatComp::ReduceHp(float damage)
 {
-	m_HpCurrent = FMath::Clamp<int>(m_HpCurrent - damage, 0, GetMaxHp());
+	m_HpCurrent = FMath::Clamp<float>(m_HpCurrent - damage, 0.f, GetMaxHp());
 	m_OnHpChanged.Broadcast(m_HpCurrent, false);
 	return m_HpCurrent;
 }

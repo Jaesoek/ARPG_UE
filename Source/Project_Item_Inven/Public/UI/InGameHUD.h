@@ -44,6 +44,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	USkillSlot* Skill_Slot_4;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UTextBlock* TextBlock_Guide;
+
 	// Animations
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* Animation_Damage;
@@ -65,6 +68,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* Anim_Skill_CoolTime_4;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* Anim_Guide_Show;
 
 private:
 	UPROPERTY(EditAnywhere, Category = CustomUISlot)

@@ -39,12 +39,15 @@ bool USkillRangeMagic::ActivateSkill()
 {
 	if (m_fMaxCoolTime > m_fCoolTime)
 		return false;
+	else if (m_OwnerCharcter->GetCharacterStat()->GetHp() < m_fSkillCost)
+		return false;
 
 	m_isCasting = true;
 	SetCoolTime(0.f);
 
 	m_OwnerCharcter->SetTpsMode();
 	m_OwnerCharcter->PlayAnimMontage(m_AnimMontage);
+	m_OwnerCharcter->GetCharacterStat()->ReduceHp(m_fSkillCost);
 
 	auto IgnoreOwner = FCollisionQueryParams::DefaultQueryParam;
 	IgnoreOwner.AddIgnoredActor(m_OwnerCharcter);

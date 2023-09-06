@@ -12,7 +12,7 @@ enum class ESkillType : uint8
 	Default, Buff, Casting
 };
 
-UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Abstract, Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PROJECT_ITEM_INVEN_API UBaseSkillComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -35,6 +35,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Skill Info")
 	UTexture2D* m_Texture;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Skill Info", Meta = (ClampMin = "0.0", UIMin = "0.0"))
+	float m_fSkillCost;
 
 public:
 	DECLARE_EVENT_OneParam(UBaseSkillComponent, FCoolTimeDelegate, float);

@@ -40,7 +40,7 @@ void UBaseSkillComponent::RefreshCoolTimeDelegate()
 	m_OnCoolTime.Broadcast(m_fCoolTime / m_fMaxCoolTime);
 }
 
-bool UBaseSkillComponent::ActivateSkill()
+bool UBaseSkillComponent::ActivateSkill(FString& strUnableReason)
 {
 	check(0 && "You must override this");
 	return false;

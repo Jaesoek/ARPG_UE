@@ -3,3 +3,7 @@
 
 #include "UI/BuffCoolTimeSlot.h"
 
+void UBuffCoolTimeSlot::NativeConstruct()
+{
+	Super::NativeConstruct();	
+}

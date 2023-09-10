@@ -58,16 +58,16 @@ public:
 	class UWidgetAnimation* Animation_Heal_Progress;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
-	class UWidgetAnimation* Anim_Skill_CoolTime_1;
+	class UWidgetAnimation* Anim_Skill_Unable_1;
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
-	class UWidgetAnimation* Anim_Skill_CoolTime_2;
+	class UWidgetAnimation* Anim_Skill_Unable_2;
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
-	class UWidgetAnimation* Anim_Skill_CoolTime_3;
+	class UWidgetAnimation* Anim_Skill_Unable_3;
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
-	class UWidgetAnimation* Anim_Skill_CoolTime_4;
+	class UWidgetAnimation* Anim_Skill_Unable_4;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* Anim_Guide_Show;
@@ -94,9 +94,9 @@ public:
 	void AddBuffCoolTime(class UBaseSkillComponent* skillComp);
 
 public:
-	UUMGSequencePlayer* PlayAnimSkillCoolTime1();
-	UUMGSequencePlayer* PlayAnimSkillCoolTime2();
-	UUMGSequencePlayer* PlayAnimSkillCoolTime3();
-	UUMGSequencePlayer* PlayAnimSkillCoolTime4();
+	UUMGSequencePlayer* PlayAnim_SkillUnable_1(const FString& strReason);
+	UUMGSequencePlayer* PlayAnim_SkillUnable_2(const FString& strReason);
+	UUMGSequencePlayer* PlayAnim_SkillUnable_3(const FString& strReason);
+	UUMGSequencePlayer* PlayAnim_SkillUnable_4(const FString& strReason);
 
 };

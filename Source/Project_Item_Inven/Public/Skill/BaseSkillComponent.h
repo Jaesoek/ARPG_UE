@@ -63,7 +63,7 @@ public:
 	void RefreshCoolTimeDelegate();
 
 public:
-	virtual bool ActivateSkill();
+	virtual bool ActivateSkill(FString& strUnableReason);
 	virtual bool ReleasedSkill();
 protected:
 	virtual void CastingSkill();

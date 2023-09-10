@@ -28,7 +28,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 public:
-	virtual bool ActivateSkill() override;
+	virtual bool ActivateSkill(FString& strUnableReason) override;
 	virtual bool ReleasedSkill() override;
 protected:
 	virtual void CastingSkill() override;

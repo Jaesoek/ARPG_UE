@@ -7,6 +7,7 @@
 
 #include "Components/ProgressBar.h"
 #include "Components/HorizontalBox.h"
+#include "Components/TextBlock.h"
 
 #include "Player/TpsCharacter.h"
 #include "Skill/BaseSkillComponent.h"
@@ -65,20 +66,26 @@ void UInGameHUD::AddBuffCoolTime(UBaseSkillComponent* skillComp)
 	HorizontalBox_BuffSkill->AddChildToHorizontalBox(widget);
 }
 
-UUMGSequencePlayer* UInGameHUD::PlayAnimSkillCoolTime1()
+UUMGSequencePlayer* UInGameHUD::PlayAnim_SkillUnable_1(const FString& strReason)
 {
-	return PlayAnimation(Anim_Skill_CoolTime_1);
-}
-UUMGSequencePlayer* UInGameHUD::PlayAnimSkillCoolTime2()
-{
-	return PlayAnimation(Anim_Skill_CoolTime_2);
-}
-UUMGSequencePlayer* UInGameHUD::PlayAnimSkillCoolTime3()
-{
-	return PlayAnimation(Anim_Skill_CoolTime_3);
-}
-UUMGSequencePlayer* UInGameHUD::PlayAnimSkillCoolTime4()
-{
-	return PlayAnimation(Anim_Skill_CoolTime_4);
+	TextBlock_Guide->SetText(FText::FromString(strReason));
+	return PlayAnimation(Anim_Skill_Unable_1);
 }
 
+UUMGSequencePlayer* UInGameHUD::PlayAnim_SkillUnable_2(const FString& strReason)
+{
+	TextBlock_Guide->SetText(FText::FromString(strReason));
+	return PlayAnimation(Anim_Skill_Unable_2);
+}
+
+UUMGSequencePlayer* UInGameHUD::PlayAnim_SkillUnable_3(const FString& strReason)
+{
+	TextBlock_Guide->SetText(FText::FromString(strReason));
+	return PlayAnimation(Anim_Skill_Unable_3);
+}
+
+UUMGSequencePlayer* UInGameHUD::PlayAnim_SkillUnable_4(const FString& strReason)
+{
+	TextBlock_Guide->SetText(FText::FromString(strReason));
+	return PlayAnimation(Anim_Skill_Unable_4);
+}

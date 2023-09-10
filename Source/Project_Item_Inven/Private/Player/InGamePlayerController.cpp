@@ -19,6 +19,9 @@ void AInGamePlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	InputComponent->BindAction("KeyEsc", IE_Pressed, this, &AInGamePlayerController::KeyESC);
+	InputComponent->BindAction("KeyAlt", IE_Pressed, this, &AInGamePlayerController::KeyAlt_Pressed);
+	InputComponent->BindAction("KeyAlt", IE_Released, this, &AInGamePlayerController::KeyAlt_Released);
+
 	InputComponent->BindAction("Inventory", IE_Pressed, this, &AInGamePlayerController::Inventory);
 }
 
@@ -54,6 +57,18 @@ void AInGamePlayerController::KeyESC()
 		SetShowMouseCursor(false);
 		SetInputMode(FInputModeGameOnly{});
 	}
+}
+
+void AInGamePlayerController::KeyAlt_Pressed()
+{
+	SetShowMouseCursor(true);
+	SetInputMode(FInputModeGameAndUI{});
+}
+
+void AInGamePlayerController::KeyAlt_Released()
+{
+	SetShowMouseCursor(false);
+	SetInputMode(FInputModeGameOnly{});
 }
 
 void AInGamePlayerController::Inventory()

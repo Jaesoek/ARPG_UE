@@ -22,4 +22,11 @@ private:
 
 	UPROPERTY(BlueprintReadOnly, Category = Inventory, Meta = (AllowPrivateAccess = true))
 	UTexture2D* m_ptrTexture;
+
+public:
+	virtual void NativeConstruct() override;
+
+public:
+	FORCEINLINE float GetBuffTime() { return m_fBuffTime; };
+	FORCEINLINE void SetBuffTime(float buffTime) { m_fBuffTime = buffTime; };
 };

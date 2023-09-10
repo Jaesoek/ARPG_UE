@@ -37,10 +37,10 @@ private: // UI ¼³Á¤
 	UInventoryUI* m_ptrInventory;
 
 private:
-	/* Bind to key event "Inventory" */
 	void KeyESC();
+	void KeyAlt_Pressed();
+	void KeyAlt_Released();
 
-	/* Bind to key event "Inventory" */
 	void Inventory();
 
 public:

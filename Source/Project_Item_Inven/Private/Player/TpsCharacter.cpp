@@ -196,10 +196,13 @@ void ATpsCharacter::Attack()
 void ATpsCharacter::Skill1_Pressed()
 {
 	auto skillComp = m_arrSKillComp[0];
-	if (skillComp == nullptr || !skillComp->ActivateSkill())
+	FString strUnableReason{};
+	if (skillComp == nullptr || !skillComp->ActivateSkill(strUnableReason))
 	{
+		if (strUnableReason.IsEmpty())
+			strUnableReason += "Set skill";
 		auto InGameController = Cast<AInGamePlayerController>(GetController());
-		InGameController->GetInGameHUD()->PlayAnimSkillCoolTime1();
+		InGameController->GetInGameHUD()->PlayAnim_SkillUnable_1(strUnableReason);
 	}
 }
 
@@ -213,10 +216,13 @@ void ATpsCharacter::Skill1_Released()
 void ATpsCharacter::Skill2_Pressed()
 {
 	auto skillComp = m_arrSKillComp[1];
-	if (skillComp == nullptr || !skillComp->ActivateSkill())
+	FString strUnableReason{};
+	if (skillComp == nullptr || !skillComp->ActivateSkill(strUnableReason))
 	{
+		if (strUnableReason.IsEmpty())
+			strUnableReason += "Set skill";
 		auto InGameController = Cast<AInGamePlayerController>(GetController());
-		InGameController->GetInGameHUD()->PlayAnimSkillCoolTime2();
+		InGameController->GetInGameHUD()->PlayAnim_SkillUnable_2(strUnableReason);
 	}
 }
 
@@ -230,20 +236,26 @@ void ATpsCharacter::Skill2_Released()
 void ATpsCharacter::Skill3()
 {
 	auto skillComp = m_arrSKillComp[2];
-	if (skillComp == nullptr || !skillComp->ActivateSkill())
+	FString strUnableReason{};
+	if (skillComp == nullptr || !skillComp->ActivateSkill(strUnableReason))
 	{
+		if (strUnableReason.IsEmpty())
+			strUnableReason += "Set skill";
 		auto InGameController = Cast<AInGamePlayerController>(GetController());
-		InGameController->GetInGameHUD()->PlayAnimSkillCoolTime3();
+		InGameController->GetInGameHUD()->PlayAnim_SkillUnable_3(strUnableReason);
 	}
 }
 
 void ATpsCharacter::Skill4()
 {
 	auto skillComp = m_arrSKillComp[3];
-	if (skillComp == nullptr || !skillComp->ActivateSkill())
+	FString strUnableReason{};
+	if (skillComp == nullptr || !skillComp->ActivateSkill(strUnableReason))
 	{
+		if (strUnableReason.IsEmpty())
+			strUnableReason += "Set skill";
 		auto InGameController = Cast<AInGamePlayerController>(GetController());
-		InGameController->GetInGameHUD()->PlayAnimSkillCoolTime4();
+		InGameController->GetInGameHUD()->PlayAnim_SkillUnable_4(strUnableReason);
 	}
 }
 

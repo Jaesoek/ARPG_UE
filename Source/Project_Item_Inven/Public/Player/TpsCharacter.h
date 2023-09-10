@@ -55,12 +55,13 @@ private:
 	class UCharacterStatComp* m_CharacterStatComp;
 
 private:
+	/** For targeting mode */
+	bool m_bTargetingMode;
 	UPROPERTY(EditAnywhere, Category = Targeting)
 	class UTargetingComp* m_TargetingComp;
 
+	/** For foot step vfx mode */
 
-	/** For targeting mode */
-	bool m_bTargetingMode;
 
 private:
 	/** Input right only for assignment */

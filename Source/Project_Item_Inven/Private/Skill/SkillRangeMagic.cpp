@@ -35,12 +35,18 @@ void USkillRangeMagic::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 }
 
 
-bool USkillRangeMagic::ActivateSkill()
+bool USkillRangeMagic::ActivateSkill(FString& strUnableReason)
 {
 	if (m_fMaxCoolTime > m_fCoolTime)
+	{
+		strUnableReason += FString(TEXT("Cool time issue!"));
 		return false;
+	}
 	else if (m_OwnerCharcter->GetCharacterStat()->GetHp() < m_fSkillCost)
+	{
+		strUnableReason += FString(TEXT("Not enough HP"));
 		return false;
+	}
 
 	m_isCasting = true;
 	SetCoolTime(0.f);

@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class PROJECT_ITEM_INVEN_API USkillSlot : public UUserWidget
 {
 	GENERATED_BODY()

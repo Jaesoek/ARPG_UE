@@ -80,6 +80,10 @@ void ATpsCharacter::BeginPlay()
 
 	// 적용된 스킬셋 UI 출력
 	m_OnSkillChanged.Broadcast();
+
+	// Set base status
+	isAttackable = true;
+	isDashable = true;
 }
 
 void ATpsCharacter::Tick(float DeltaTime)
@@ -161,7 +165,7 @@ void ATpsCharacter::LookUp(float NewAxisValue)
 
 void ATpsCharacter::Dash()
 {
-	if (IsPlayingRootMotion()) return;
+	if (!isDashable) return;
 
 	const FRotator Rotation = Controller->GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -178,18 +182,20 @@ void ATpsCharacter::Dash()
 		SetActorRotation(YawRotation);
 	}
 
-	PlayAnimMontage(m_RollAnimation, m_CharacterStatComp->GetAttackSpeed());
+	PlayAnimMontage(m_DashAnimation, m_CharacterStatComp->GetAttackSpeed());
 }
 
 void ATpsCharacter::Attack()
 {
 	if (m_CurrentWeapon != nullptr)
 	{
-		// 공격중인 경우, 회피 동작중인 경우
-		if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(m_CurrentWeapon->GetAttackMontage())) return;
-		else if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(m_RollAnimation)) return;
-
-		PlayAnimMontage(m_CurrentWeapon->GetAttackMontage(), m_CharacterStatComp->GetAttackSpeed()); // Item에서 가져올 수 있도록 설정
+		if (isAttackable)
+			PlayAnimMontage(m_CurrentWeapon->GetAttackMontage(), m_CharacterStatComp->GetAttackSpeed()); // Item에서 가져올 수 있도록 설정
+	}
+	else
+	{
+		auto InGameController = Cast<AInGamePlayerController>(GetController());
+		InGameController->GetInGameHUD()->PlayAnim_Show_WarningText(TEXT("No weapon!"));
 	}
 }
 
@@ -259,10 +265,31 @@ void ATpsCharacter::Skill4()
 	}
 }
 
-void ATpsCharacter::Equip(TSubclassOf<AEquipItem> equipItemClass)
+bool ATpsCharacter::Equip(TSubclassOf<AEquipItem> equipItemClass)
 {
-	
+	auto equipItem = Cast<AEquipItem>(equipItemClass->GetDefaultObject());
+	switch (equipItem->GetEquipType())
+	{
+		case EEquipType::Weapon :
+		{
+			if (m_WeaponActorComp->GetChildActorClass() == equipItemClass)
+			{
+				m_WeaponActorComp->SetChildActorClass(nullptr);
+				m_CurrentWeapon = nullptr;
+				return false;
+			}
+			else
+			{
+				m_WeaponActorComp->SetChildActorClass(equipItemClass);
+				m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
+
 
 void ATpsCharacter::WeaponSwitchRifle()
 {
@@ -272,8 +299,6 @@ void ATpsCharacter::WeaponSwitchRifle()
 		GetCharacterMovement()->MaxWalkSpeed = 400.f;  // 캐릭터 설정 변경
 		SetTpsMode(); // 카메라 설정 변경
 
-		auto playerState = Cast<AInGamePlayerState>(GetPlayerState());
-		m_WeaponActorComp->SetChildActorClass(playerState->m_Rifle);
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
 	}
@@ -287,8 +312,6 @@ void ATpsCharacter::WeaponSwitchSword()
 		GetCharacterMovement()->MaxWalkSpeed = 600.f;
 		SetTravelMode();
 
-		auto playerState = Cast<AInGamePlayerState>(GetPlayerState());
-		m_WeaponActorComp->SetChildActorClass(playerState->m_Sword);
 		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		m_CurrentWeapon->SetOwner(this);
 
@@ -351,4 +374,3 @@ void ATpsCharacter::SetTravelMode()
 	auto controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	controller->SetViewTargetWithBlend(m_TravelChildComponent->GetChildActor(), 0.2);
 }
-

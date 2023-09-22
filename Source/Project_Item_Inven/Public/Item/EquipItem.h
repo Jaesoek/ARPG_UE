@@ -3,38 +3,40 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Item/BaseItem.h"
 #include "EquipItem.generated.h"
 
-UCLASS()
-class PROJECT_ITEM_INVEN_API AEquipItem : public AActor
+UENUM(BlueprintType)
+enum class EEquipType : uint8
+{
+	None, Weapon, Helmet, Breast
+};
+
+UCLASS(Abstract)
+class PROJECT_ITEM_INVEN_API AEquipItem : public ABaseItem
 {
 	GENERATED_BODY()
-	
-public:	
-	AEquipItem();
-
-protected:
-	virtual void BeginPlay() override;
-
-public:	
-	virtual void Tick(float DeltaTime) override;
 
 private:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Animation, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditDefaultsOnly, Category = ItemInfo, BlueprintReadOnly, Meta = (AllowprivateAccess))
+	EEquipType m_EquipType;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Meta = (AllowprivateAccess))
+	bool m_isEquiped;
+
+	UPROPERTY(EditDefaultsOnly, Category = ItemInfo, BlueprintReadOnly, Meta = (AllowprivateAccess))
 	UAnimMontage* m_AttackMontage;
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Skill, Meta = (AllowPrivateAccess = true))
-	TSubclassOf<class UBaseSkillComponent> m_SkillCompClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Skill List")
+	TArray<TSubclassOf<class UBaseSkillComponent>> m_arrSkillComp;
+
+public:	
+	AEquipItem();
 
 public:
-	FORCEINLINE UAnimMontage* GetAttackMontage() const
-	{
-		return m_AttackMontage;
-	};
-	FORCEINLINE void SetAttackMontage(UAnimMontage* attackMontage)
-	{
-		m_AttackMontage = attackMontage;
-	};
+	virtual bool UseItem(ACharacter* character) override;
+
+	FORCEINLINE EEquipType GetEquipType() const { return m_EquipType; };
+	FORCEINLINE UAnimMontage* GetAttackMontage() const { return m_AttackMontage; };
 };

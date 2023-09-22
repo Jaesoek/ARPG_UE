@@ -23,6 +23,15 @@ private:
 	class UMaterialInstanceDynamic* m_MID_RangeCheck;
 	class ADecalActor* m_DA_RangeCheck;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Skill Detail")
+	class UNiagaraSystem* m_NS_Attack;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Skill Detail", Meta = (UIMin = "0.0", UIMax = "80.0", ClampMin = "0.0", ClampMax = "80.0"))
+	float m_AttackRadius;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Skill Detail", Meta = (UIMin = "0.0", UIMax = "80.0", ClampMin = "0.0", ClampMax = "80.0"))
+	float m_DamageSkill;
+
 public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

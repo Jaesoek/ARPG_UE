@@ -17,7 +17,8 @@ ABaseEnemy::ABaseEnemy()
 
 	// Hp Widget component
 	m_HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HpBarWidgetComp"));
-	m_HpBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	m_HpBarWidget->AttachTo(RootComponent);
+	m_HpBarWidget->SetRelativeLocation(FVector::ZeroVector);
 }
 
 void ABaseEnemy::BeginPlay()

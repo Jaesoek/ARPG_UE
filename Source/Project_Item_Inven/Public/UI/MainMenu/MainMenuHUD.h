@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class PROJECT_ITEM_INVEN_API UMainMenuHUD : public UUserWidget
 {
 	GENERATED_BODY()
@@ -26,6 +26,13 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UMenuSelectUI* SelectQuit;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Level")
+	TSoftObjectPtr<UWorld> m_LevelToLoad;
+
+private:
+	class AMainMenuController* m_ownerController;
 
 private:
 	virtual void NativeOnInitialized() override;

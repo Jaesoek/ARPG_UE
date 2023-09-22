@@ -6,7 +6,10 @@
 #include "Component/CharacterStatComp.h"
 #include "Engine/DecalActor.h"
 #include "Components/DecalComponent.h"
+
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+
 
 
 void USkillRangeMagic::BeginPlay()
@@ -83,22 +86,6 @@ bool USkillRangeMagic::ActivateSkill(FString& strUnableReason)
 	return true;
 }
 
-bool USkillRangeMagic::ReleasedSkill()
-{
-	if (!m_isCasting)
-		return false;
-
-	auto location = m_DA_RangeCheck->GetActorLocation();
-	m_DA_RangeCheck->Destroy();
-
-	m_OwnerCharcter->OnCharacterMove.Unbind();
-	m_OwnerCharcter->SetTravelMode();
-	m_isCasting = false;
-
-	m_OwnerCharcter->PlayAnimMontage(m_AnimMontage,1.0f, FName(TEXT("Attack")));
-	return true;
-}
-
 void USkillRangeMagic::CastingSkill()
 {
 	if (!IsValid(m_DA_RangeCheck)) return;
@@ -139,4 +126,44 @@ void USkillRangeMagic::CastingSkill()
 		m_MID_RangeCheck->SetScalarParameterValue(FName(TEXT("IsAvailable")), 1.f);
 	else
 		m_MID_RangeCheck->SetScalarParameterValue(FName(TEXT("IsAvailable")), 0.f);
+}
+
+bool USkillRangeMagic::ReleasedSkill()
+{
+	if (!m_isCasting)
+		return false;
+
+	auto location = m_DA_RangeCheck->GetActorLocation();
+	m_DA_RangeCheck->Destroy();
+
+	m_OwnerCharcter->OnCharacterMove.Unbind();
+	m_OwnerCharcter->SetTravelMode();
+	m_isCasting = false;
+
+	m_OwnerCharcter->PlayAnimMontage(m_AnimMontage, 1.0f, FName(TEXT("Attack")));
+
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		GetWorld(), m_NS_Attack, location
+	);
+
+	TArray<FHitResult> results{};
+	auto IgnoreOwner = FCollisionQueryParams::DefaultQueryParam;
+	IgnoreOwner.AddIgnoredActor(m_OwnerCharcter);
+	GetWorld()->SweepMultiByChannel(
+		results,
+		location,
+		location,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel3,
+		FCollisionShape::MakeSphere(m_AttackRadius),
+		IgnoreOwner
+	);
+
+	for (auto hitResult : results)
+	{
+		hitResult.GetActor()->TakeDamage(m_DamageSkill, FDamageEvent{}, m_OwnerCharcter->GetController(), m_OwnerCharcter);
+	}
+
+	return true;
 }

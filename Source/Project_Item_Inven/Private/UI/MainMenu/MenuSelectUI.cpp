@@ -17,8 +17,14 @@ void UMenuSelectUI::NativeOnMouseLeave(const FPointerEvent& InMouseEvent)
 
 FReply UMenuSelectUI::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	auto& replayResult = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-
-	return replayResult;
+	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+	return FReply::Unhandled();
 }
 
+FReply UMenuSelectUI::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	Super::NativeOnMouseButtonUp(InGeometry, InMouseEvent);
+	OnBtnPressed.ExecuteIfBound();
+
+	return FReply::Unhandled();
+}

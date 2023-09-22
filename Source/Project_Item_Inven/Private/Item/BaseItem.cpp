@@ -7,7 +7,7 @@
 #include "Particles/ParticleSystem.h"
 
 #include "InGamePlayerState.h"
-#include "Player/Project_Item_InvenCharacter.h"
+#include "Player/TpsCharacter.h"
 
 #include "Item/Components/ItemDropComponent.h"
 
@@ -19,24 +19,24 @@ ABaseItem::ABaseItem()
 	m_MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	m_MeshComponent->AttachTo(RootComponent);
 
+	/*
 	// Base Collision Setting
 	m_MeshComponent->SetCollisionObjectType(ECC_GameTraceChannel1);
 	m_MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	m_MeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	m_MeshComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	m_MeshComponent->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-
-	m_ItemDropComponent = NewObject<UItemDropComponent>(this, TEXT("ItemDropComp"));
-//	m_ItemDropComponent->RegisterComponent();
-//	AddInstanceComponent(m_ItemDropComponent);
+	*/
 }
 
 void ABaseItem::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	/*
 	m_MeshComponent->SetSimulatePhysics(true);
 	m_MeshComponent->SetNotifyRigidBodyCollision(true);
+	*/
 	m_MeshComponent->SetGenerateOverlapEvents(true);
 }
 
@@ -52,29 +52,18 @@ void ABaseItem::Tick(float DeltaTime)
 
 }
 
-
-void ABaseItem::UseItem_Implementation()
-{
-
-}
-
 void ABaseItem::SetFocused(bool isFocused)
 {
 	m_MeshComponent->SetRenderCustomDepth(isFocused);
 }
 
-void ABaseItem::Interact(const AProject_Item_InvenCharacter* character)
+bool ABaseItem::Interact(const ACharacter* character, FString& strUnableReason)
 {
 	AInGamePlayerState* playerState = Cast<AInGamePlayerState>(character->GetPlayerState());
-	bool successAddItem = playerState->addItem(
-		GetClass(),
-		m_TextItemName,
-		m_TextItemDescription,
-		m_Thumbnail
-	);
+	bool successAddItem = playerState->addItem(GetClass());
+
 	if (successAddItem)
 	{
-		// ½Àµæ FX »ý¼º
 		FTransform actorTransform = GetActorTransform();
 		UGameplayStatics::SpawnEmitterAtLocation(
 			GetWorld(),
@@ -83,9 +72,21 @@ void ABaseItem::Interact(const AProject_Item_InvenCharacter* character)
 		);
 
 		Destroy();
+
+		return true;
 	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Inventory Full!!"));
-	}
+
+	strUnableReason += TEXT("Inventory Full!!");
+	return false;
+}
+
+bool ABaseItem::UseItem(ACharacter* character)
+{
+	check(0 && "You must override this");
+	return false;
+}
+
+bool ABaseItem::UseItemBP(ACharacter* character)
+{
+	return UseItem(character);
 }

@@ -1,21 +1,20 @@
 
 #include "Item/EquipItem.h"
+
+#include "Player/TpsCharacter.h"
+
 #include "Skill/BaseSkillComponent.h"
 
 AEquipItem::AEquipItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	m_eItemType = EItemType::Equipable;
+	m_isEquiped = false;
 }
 
-void AEquipItem::BeginPlay()
+bool AEquipItem::UseItem(ACharacter* character)
 {
-	Super::BeginPlay();
-	
+	auto tpsCharacter = Cast<ATpsCharacter>(character);
+	return tpsCharacter->Equip(GetClass());
 }
-
-void AEquipItem::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "MenuSelectUI.generated.h"
 
+DECLARE_DELEGATE(FButtonPressed);
+
 /**
  * 
  */
@@ -13,7 +15,7 @@ UCLASS(Abstract)
 class PROJECT_ITEM_INVEN_API UMenuSelectUI : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UBorder* Border_Select;
@@ -25,12 +27,16 @@ public:
 	class UWidgetAnimation* Anim_Focused;
 
 private:
+	bool m_isFocused;
+
+private:
 	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
 
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
 public:
-	// TODO: Init 추가하기
-	void Init(const UObject* object, );
+	FButtonPressed OnBtnPressed;
 };
+

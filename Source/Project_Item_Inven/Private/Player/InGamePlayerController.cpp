@@ -28,6 +28,9 @@ void AInGamePlayerController::SetupInputComponent()
 void AInGamePlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetShowMouseCursor(false);
+	SetInputMode(FInputModeGameOnly{});
 }
 
 void AInGamePlayerController::OnPossess(APawn* InPawn)
@@ -49,7 +52,7 @@ void AInGamePlayerController::OnPossess(APawn* InPawn)
 }
 
 void AInGamePlayerController::KeyESC()
-{	
+{
 	// Inventory 열려있으면 제거
 	if (m_ptrInventory && m_ptrInventory->IsInViewport())
 	{

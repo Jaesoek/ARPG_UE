@@ -11,8 +11,15 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"UMG",
-				"CoreUObject"
+				"CoreUObject",
+				"AIModule"
 			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "CascadeToNiagaraConverter",
+			"Enabled": true
 		}
 	]
 }

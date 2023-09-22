@@ -34,7 +34,9 @@ private: // UI ¼³Á¤
 	TSubclassOf<UInventoryUI> Inventory_UI;
 
 	UInGameHUD* m_ptrInGameHUD;
+
 	UInventoryUI* m_ptrInventory;
+
 
 private:
 	void KeyESC();

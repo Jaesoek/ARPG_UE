@@ -4,6 +4,8 @@
 #include "InGamePlayerState.h"
 #include "UI/InventorySlot.h"
 
+#include "Item/BaseItem.h"
+
 #include "Components/UniformGridPanel.h"
 #include "Components/UniformGridSlot.h"
 
@@ -17,10 +19,10 @@ void UInventoryUI::NativeOnInitialized()
 	m_playerState = GetOwningPlayer()->GetPlayerState<AInGamePlayerState>();
 
 	// Observing Inventory's add item
-	m_playerState->OnAddItem.AddDynamic(this, &UInventoryUI::RefreshInventoryUI);
+	m_playerState->OnInventoryEdited.AddDynamic(this, &UInventoryUI::RefreshInventoryUI);
 
 	// UI Inventory size 초기화
-	m_nInventorySize = m_playerState->getInventory()->Max();
+	m_nInventorySize = m_playerState->getInventory().Max();
 	m_arrSlotInventory.Init(nullptr, m_nInventorySize);
 
 	for (int i = 0; i < 60; i++)
@@ -46,17 +48,29 @@ void UInventoryUI::NativeOnInitialized()
 
 void UInventoryUI::RefreshInventoryUI()
 {
-	auto arrInventory = m_playerState->getInventory()->GetData();
+	auto arrInventory = m_playerState->getInventory().GetData();
 
 	for (int i = 0; i < m_nInventorySize; ++i)
 	{
-		m_arrSlotInventory[i]->setTexture(arrInventory[i].texture);
+		if (arrInventory[i].itemClass != nullptr)
+		{
+			auto ptrItem = Cast<ABaseItem>(arrInventory[i].itemClass->GetDefaultObject());
+			m_arrSlotInventory[i]->setTexture(ptrItem->GetItemThumbnail());
+			m_arrSlotInventory[i]->setItemType(ptrItem->GetItemType());
+		}
+		else
+		{
+			m_arrSlotInventory[i]->setTexture(nullptr);
+			m_arrSlotInventory[i]->setItemType(EItemType::None);
+		}
+
 		m_arrSlotInventory[i]->setItemCount(arrInventory[i].count);
+		m_arrSlotInventory[i]->setIsEquiped(arrInventory[i].isEquiped);
 	}
 }
 
 void UInventoryUI::AddItemInUI()
 {
-
+	// Queue에 저장하고 돌린다든가 하는것들을 추가합시다
 }
 

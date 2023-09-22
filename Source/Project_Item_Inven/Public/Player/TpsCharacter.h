@@ -54,14 +54,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, Meta = (AllowPrivateAccess = true))
 	class UCharacterStatComp* m_CharacterStatComp;
 
-private:
 	/** For targeting mode */
 	bool m_bTargetingMode;
 	UPROPERTY(EditAnywhere, Category = Targeting)
 	class UTargetingComp* m_TargetingComp;
-
-	/** For foot step vfx mode */
-
 
 private:
 	/** Input right only for assignment */
@@ -89,16 +85,19 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
 	EWeaponMode m_eWeaponMode;
 
-public:
-	FORCEINLINE const EWeaponMode GetWeaponMode() const { return m_eWeaponMode; }
-	FORCEINLINE void SetWeaponMode(EWeaponMode weaponMode) { m_eWeaponMode = weaponMode; }
-
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
 	class AEquipItem* m_CurrentWeapon;
 
 	UPROPERTY(EditAnywhere, Category = Animation) // TODO: 언젠간 어디로 옮겨야하는디...
-	UAnimMontage* m_RollAnimation;
+	UAnimMontage* m_DashAnimation;
+
+private: // Control with animation asset
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Meta = (AllowPrivateAccess = true))
+	bool isAttackable;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Meta = (AllowPrivateAccess = true))
+	bool isDashable;
 
 
 public:
@@ -130,9 +129,10 @@ protected: // Logics about key,mouse Input
 	void Skill3();
 	void Skill4();
 
-protected: // Logics about key,mouse Input
-	void Equip(TSubclassOf<AEquipItem> equipItemClass);
+public:
+	bool Equip(TSubclassOf<AEquipItem> equipItemClass);
 
+protected: // Logics about key,mouse Input
 	void WeaponSwitchRifle();
 	void WeaponSwitchSword();
 
@@ -142,11 +142,14 @@ protected: // Logics about key,mouse Input
 public:
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+public:
+	FORCEINLINE const EWeaponMode GetWeaponMode() const { return m_eWeaponMode; }
+	FORCEINLINE void SetWeaponMode(EWeaponMode weaponMode) { m_eWeaponMode = weaponMode; }
+
 public: // Camera mode setting
 	UFUNCTION(BlueprintCallable)
 	void SetTpsMode();
 
 	UFUNCTION(BlueprintCallable)
 	void SetTravelMode();
-
 };

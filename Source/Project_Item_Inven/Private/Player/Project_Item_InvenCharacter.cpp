@@ -182,7 +182,7 @@ void AProject_Item_InvenCharacter::Interaction()
 	if (!InteractiveActor) return;
 
 	ABaseItem* item = Cast<ABaseItem>(InteractiveActor);
-	item->Interact(this);
+//	item->Interact(this);
 
 	ptrInteractionIndicator->RemoveFromParent();
 	InteractiveActor = nullptr;

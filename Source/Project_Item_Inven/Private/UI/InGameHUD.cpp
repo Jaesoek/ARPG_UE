@@ -64,6 +64,16 @@ void UInGameHUD::AddBuffCoolTime(UBaseSkillComponent* skillComp)
 	auto widget = CreateWidget<UBuffCoolTimeSlot>(this, m_BuffCoolTimeSlot_Class);
 	widget->m_ptrTexture = skillComp->m_Texture;
 	HorizontalBox_BuffSkill->AddChildToHorizontalBox(widget);
+
+	// buff 내용이랑 바인딩을 하고 싶어
+	// 어떻게 해야하지...
+	// 모르겠어... 
+}
+
+UUMGSequencePlayer* UInGameHUD::PlayAnim_Show_WarningText(const FString& strWarning)
+{
+	TextBlock_Guide->SetText(FText::FromString(strWarning));
+	return PlayAnimation(Anim_Warning_Show);
 }
 
 UUMGSequencePlayer* UInGameHUD::PlayAnim_SkillUnable_1(const FString& strReason)

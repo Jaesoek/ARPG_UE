@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Project_Item_InvenGameMode.h"
-#include "Player/Project_Item_InvenCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 AProject_Item_InvenGameMode::AProject_Item_InvenGameMode()

@@ -21,12 +21,6 @@ class PROJECT_ITEM_INVEN_API UInGameHUD : public UUserWidget
 public:
 	// Widgets
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UBorder* border_profile;
-	
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UImage* img_profile;
-	
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* progress_hp;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -70,7 +64,7 @@ public:
 	class UWidgetAnimation* Anim_Skill_Unable_4;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
-	class UWidgetAnimation* Anim_Guide_Show;
+	class UWidgetAnimation* Anim_Warning_Show;
 
 private:
 	UPROPERTY(EditAnywhere, Category = CustomUISlot)
@@ -94,6 +88,8 @@ public:
 	void AddBuffCoolTime(class UBaseSkillComponent* skillComp);
 
 public:
+	UUMGSequencePlayer* PlayAnim_Show_WarningText(const FString& strWarning);
+
 	UUMGSequencePlayer* PlayAnim_SkillUnable_1(const FString& strReason);
 	UUMGSequencePlayer* PlayAnim_SkillUnable_2(const FString& strReason);
 	UUMGSequencePlayer* PlayAnim_SkillUnable_3(const FString& strReason);

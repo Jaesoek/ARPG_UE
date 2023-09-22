@@ -4,6 +4,11 @@
 #include "InGamePlayerState.h"
 #include "Item/BaseItem.h"
 #include "Item/EquipItem.h"
+#include "Item/ConsumableItem.h"
+
+#include "GameFramework/Character.h"
+
+#include "Kismet/GameplayStatics.h"
 
 void AInGamePlayerState::PostInitializeComponents()
 {
@@ -13,7 +18,7 @@ void AInGamePlayerState::PostInitializeComponents()
 	m_arrInventory.Init(FInventoryStruct{}, m_nMaxInventorySize);
 }
 
-bool AInGamePlayerState::addItem(UClass* itemClass, FText name, FText description, UTexture2D* thumbnail)
+bool AInGamePlayerState::addItem(TSubclassOf<ABaseItem> itemClass)
 {
 	auto ptrItem = Cast<ABaseItem>(itemClass->GetDefaultObject());
 	if (ptrItem == nullptr) return false;
@@ -22,22 +27,22 @@ bool AInGamePlayerState::addItem(UClass* itemClass, FText name, FText descriptio
 	{
 		case EItemType::Consumable:
 		{
-			bool isSuccess = addConsumableItem(itemClass, name, description, thumbnail);
-			if (isSuccess) OnAddItem.Broadcast();
+			bool isSuccess = addConsumableItem(itemClass);
+			if (isSuccess) OnInventoryEdited.Broadcast();
 			return isSuccess;
 		}
 		case EItemType::Equipable:
 		{
-			bool isSuccess = addEquipableItem(itemClass, name, description, thumbnail);
-			if (isSuccess) OnAddItem.Broadcast();
+			bool isSuccess = addEquipableItem(itemClass);
+			if (isSuccess) OnInventoryEdited.Broadcast();
 			return isSuccess;
 		}
 	}
-	
+
 	return false;
 }
 
-bool AInGamePlayerState::addConsumableItem(UClass* itemClass, FText name, FText description, UTexture2D* thumbnail)
+bool AInGamePlayerState::addConsumableItem(TSubclassOf<ABaseItem> itemClass)
 {
 	int nPosNull = -1;
 	for (int i = 0; i < m_nMaxInventorySize; ++i)
@@ -57,9 +62,6 @@ bool AInGamePlayerState::addConsumableItem(UClass* itemClass, FText name, FText 
 	{
 		FInventoryStruct& tempInv = m_arrInventory[nPosNull];
 		tempInv.itemClass = itemClass;
-		tempInv.description = description;
-		tempInv.name = name;
-		tempInv.texture = thumbnail;
 		tempInv.count += 1;
 
 		return true;
@@ -68,7 +70,7 @@ bool AInGamePlayerState::addConsumableItem(UClass* itemClass, FText name, FText 
 	return false;
 }
 
-bool AInGamePlayerState::addEquipableItem(UClass* itemClass, FText name, FText description, UTexture2D* thumbnail)
+bool AInGamePlayerState::addEquipableItem(TSubclassOf<ABaseItem> itemClass)
 {
 	for (int i = 0; i < m_nMaxInventorySize; ++i)
 	{
@@ -76,10 +78,8 @@ bool AInGamePlayerState::addEquipableItem(UClass* itemClass, FText name, FText d
 		{
 			FInventoryStruct& tempInv = m_arrInventory[i];
 			tempInv.itemClass = itemClass;
-			tempInv.description = description;
-			tempInv.name = name;
-			tempInv.texture = thumbnail;
 			tempInv.count += 1;
+			tempInv.isEquiped = false;
 
 			return true;
 		}
@@ -94,49 +94,61 @@ bool AInGamePlayerState::swapItem(int nFirstIndex, int nSecondIndex)
 		return false;
 
 	m_arrInventory.SwapMemory(nFirstIndex, nSecondIndex);
-	OnAddItem.Broadcast();
+	OnInventoryEdited.Broadcast();
 	return true;
 }
 
-bool AInGamePlayerState::removeItemAt(int pos)
+bool AInGamePlayerState::clearSlot(int inventoryIndex)
 {
-	if (pos < m_nMaxInventorySize)
+	if (inventoryIndex < m_nMaxInventorySize)
 	{
-		m_arrInventory[pos] = FInventoryStruct {};
-		OnAddItem.Broadcast();
+		m_arrInventory[inventoryIndex] = FInventoryStruct{};
+		OnInventoryEdited.Broadcast();
 		return true;
 	}
 
 	return false;
 }
 
-bool AInGamePlayerState::useItem(const FInventoryStruct& itemInventory)
+bool AInGamePlayerState::removeItemAt(int inventoryIndex)
 {
-	auto ptrItem = Cast<ABaseItem>(itemInventory.itemClass->GetDefaultObject());
-	if (ptrItem == nullptr) return false;
-
-	switch (ptrItem->GetItemType())
+	if (inventoryIndex < m_nMaxInventorySize)
 	{
-		case EItemType::Consumable:
+		if (m_arrInventory[inventoryIndex].count == 1)
 		{
-			useConsumable();
+			return clearSlot(inventoryIndex);
 		}
-		case EItemType::Equipable:
+		else
 		{
-			useEquipable();
+			m_arrInventory[inventoryIndex].count -= 1;
+			OnInventoryEdited.Broadcast();
+			return true;
 		}
 	}
 
 	return false;
 }
 
-bool AInGamePlayerState::useConsumable()
+bool AInGamePlayerState::useItem(int inventoryIndex)
 {
-	
-	return false;
-}
+	auto inventoryItemClass = m_arrInventory[inventoryIndex].itemClass;
+	if (!IsValid(inventoryItemClass)) return false;
 
-bool AInGamePlayerState::useEquipable()
-{
+	auto character = Cast<ACharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	auto ptrItem = Cast<ABaseItem>(inventoryItemClass->GetDefaultObject());
+	switch (ptrItem->GetItemType())
+	{
+		case EItemType::Consumable:
+		{
+			if (ptrItem->UseItem(character))
+				return removeItemAt(inventoryIndex);
+		}
+		case EItemType::Equipable:
+		{
+			m_arrInventory[inventoryIndex].isEquiped = ptrItem->UseItem(character);
+			OnInventoryEdited.Broadcast();
+		}
+	}
+
 	return false;
 }

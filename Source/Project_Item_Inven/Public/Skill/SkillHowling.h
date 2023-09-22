@@ -23,8 +23,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Skill Detail")
 	class UNiagaraSystem* m_effect;
 
-	bool m_isBuffActive;
-
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

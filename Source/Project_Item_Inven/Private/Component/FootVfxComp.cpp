@@ -3,32 +3,58 @@
 
 #include "Component/FootVfxComp.h"
 
-// Sets default values for this component's properties
+#include "Components/SphereComponent.h"
+
 UFootVfxComp::UFootVfxComp()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	// Targeting Setting
+	FootStepSphere = CreateDefaultSubobject<USphereComponent>(TEXT("TargetingSphere"));
+	FootStepSphere->SetupAttachment(this);
+	FootStepSphere->InitSphereRadius(40.f);
+
+	// Set Targeting
+	FootStepSphere->SetCollisionObjectType(ECC_Pawn);
+	FootStepSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	FootStepSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	FootStepSphere->SetGenerateOverlapEvents(true);
+
+	FootStepSphere->OnComponentBeginOverlap.AddDynamic(this, &UFootVfxComp::OnTargetingOverlap);
+	FootStepSphere->OnComponentEndOverlap.AddDynamic(this, &UFootVfxComp::EndTargetingOverlap);
 }
 
 
-// Called when the game starts
 void UFootVfxComp::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
 }
 
 
-// Called every frame
 void UFootVfxComp::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+}
+
+void UFootVfxComp::OnTargetingOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Yellow, TEXT("Foot Begin Overlap"));
+}
+
+void UFootVfxComp::EndTargetingOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Yellow, TEXT("Foot End Overlap"));
+}
+
+UNiagaraSystem* UFootVfxComp::GetFootVfx()
+{
+	return m_FootVfx;
+}
+
+USoundBase* UFootVfxComp::GetFootSound()
+{
+	return m_FootSound;
 }
 

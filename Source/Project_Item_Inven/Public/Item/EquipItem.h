@@ -9,7 +9,7 @@
 UENUM(BlueprintType)
 enum class EEquipType : uint8
 {
-	None, Weapon, Helmet, Breast
+	Weapon, Helmet, Breast
 };
 
 UCLASS(Abstract)
@@ -20,9 +20,6 @@ class PROJECT_ITEM_INVEN_API AEquipItem : public ABaseItem
 private:
 	UPROPERTY(EditDefaultsOnly, Category = ItemInfo, BlueprintReadOnly, Meta = (AllowprivateAccess))
 	EEquipType m_EquipType;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Meta = (AllowprivateAccess))
-	bool m_isEquiped;
 
 	UPROPERTY(EditDefaultsOnly, Category = ItemInfo, BlueprintReadOnly, Meta = (AllowprivateAccess))
 	UAnimMontage* m_AttackMontage;

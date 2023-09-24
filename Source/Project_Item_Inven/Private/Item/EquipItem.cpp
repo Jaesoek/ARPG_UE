@@ -10,7 +10,6 @@ AEquipItem::AEquipItem()
 	PrimaryActorTick.bCanEverTick = true;
 
 	m_eItemType = EItemType::Equipable;
-	m_isEquiped = false;
 }
 
 bool AEquipItem::UseItem(ACharacter* character)

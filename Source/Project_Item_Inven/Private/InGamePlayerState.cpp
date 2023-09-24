@@ -2,9 +2,6 @@
 
 
 #include "InGamePlayerState.h"
-#include "Item/BaseItem.h"
-#include "Item/EquipItem.h"
-#include "Item/ConsumableItem.h"
 
 #include "GameFramework/Character.h"
 
@@ -79,7 +76,6 @@ bool AInGamePlayerState::addEquipableItem(TSubclassOf<ABaseItem> itemClass)
 			FInventoryStruct& tempInv = m_arrInventory[i];
 			tempInv.itemClass = itemClass;
 			tempInv.count += 1;
-			tempInv.isEquiped = false;
 
 			return true;
 		}
@@ -145,8 +141,13 @@ bool AInGamePlayerState::useItem(int inventoryIndex)
 		}
 		case EItemType::Equipable:
 		{
-			m_arrInventory[inventoryIndex].isEquiped = ptrItem->UseItem(character);
+			ptrItem->UseItem(character);
+
+			m_mapEquipment.Emplace(Cast<AEquipItem>(ptrItem)->GetEquipType(), ptrItem);
+			//removeItemAt(inventoryIndex);
+
 			OnInventoryEdited.Broadcast();
+			OnEquipEdited.Broadcast();
 		}
 	}
 

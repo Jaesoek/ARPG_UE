@@ -65,7 +65,6 @@ void UInventoryUI::RefreshInventoryUI()
 		}
 
 		m_arrSlotInventory[i]->setItemCount(arrInventory[i].count);
-		m_arrSlotInventory[i]->setIsEquiped(arrInventory[i].isEquiped);
 	}
 }
 

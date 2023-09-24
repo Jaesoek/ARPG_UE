@@ -26,9 +26,6 @@ private:
 	EItemType m_eItemType;
 
 	UPROPERTY(BlueprintReadOnly, Category = Inventory, Meta = (AllowPrivateAccess = true))
-	bool m_isEquiped;
-
-	UPROPERTY(BlueprintReadOnly, Category = Inventory, Meta = (AllowPrivateAccess = true))
 	UTexture2D* m_ptrTexture;
 
 public:
@@ -40,9 +37,6 @@ public:
 
 	FORCEINLINE void setItemType(EItemType itemType) { m_eItemType = itemType; };
 	FORCEINLINE EItemType getItemType() const { return m_eItemType; };
-
-	FORCEINLINE void setIsEquiped(bool isEquiped) { m_isEquiped = isEquiped; };
-	FORCEINLINE bool getIsEquiped() const { return m_isEquiped; };
 
 	FORCEINLINE void setTexture(UTexture2D* texture) { m_ptrTexture = texture; };
 	FORCEINLINE const UTexture2D* getTexture() const { return m_ptrTexture; };

@@ -2,15 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Project_Item_Inven.h"
 #include "Item/BaseItem.h"
 #include "EquipItem.generated.h"
-
-UENUM(BlueprintType)
-enum class EEquipType : uint8
-{
-	Weapon, Helmet, Breast
-};
 
 UCLASS(Abstract)
 class PROJECT_ITEM_INVEN_API AEquipItem : public ABaseItem

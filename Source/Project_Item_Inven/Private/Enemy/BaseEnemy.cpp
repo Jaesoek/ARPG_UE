@@ -17,7 +17,7 @@ ABaseEnemy::ABaseEnemy()
 
 	// Hp Widget component
 	m_HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HpBarWidgetComp"));
-	m_HpBarWidget->AttachTo(RootComponent);
+	m_HpBarWidget->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	m_HpBarWidget->SetRelativeLocation(FVector::ZeroVector);
 }
 

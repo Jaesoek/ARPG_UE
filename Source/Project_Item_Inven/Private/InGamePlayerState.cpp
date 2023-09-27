@@ -2,21 +2,30 @@
 
 
 #include "InGamePlayerState.h"
+#include "Item/EquipItem.h"
+#include "Item/ConsumableItem.h"
 
-#include "GameFramework/Character.h"
+#include "Player/TpsCharacter.h"
 
 #include "Kismet/GameplayStatics.h"
+
 
 void AInGamePlayerState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	// Inventory container 초기화
+	// Init inventory, equipment container
 	m_arrInventory.Init(FInventoryStruct{}, m_nMaxInventorySize);
+
+	m_mapEquipment.Add(EEquipType::Weapon, nullptr);
+	m_mapEquipment.Add(EEquipType::Helmet, nullptr);
+	m_mapEquipment.Add(EEquipType::Breast, nullptr);
 }
 
 bool AInGamePlayerState::addItem(TSubclassOf<ABaseItem> itemClass)
 {
+	if (!IsValid(itemClass)) return false;
+
 	auto ptrItem = Cast<ABaseItem>(itemClass->GetDefaultObject());
 	if (ptrItem == nullptr) return false;
 
@@ -125,6 +134,25 @@ bool AInGamePlayerState::removeItemAt(int inventoryIndex)
 	return false;
 }
 
+void AInGamePlayerState::MoveToEquip(int inventoryIndex, const AEquipItem& equipItemObj)
+{
+	m_mapEquipment.Emplace(equipItemObj.GetEquipType(), equipItemObj.GetClass());
+	OnEquipEdited.Broadcast();
+
+	clearSlot(inventoryIndex);
+}
+
+void AInGamePlayerState::SwapEquip(int inventoryIndex, EEquipType equipType)
+{
+	auto tempItemClass = m_mapEquipment[equipType];
+	m_mapEquipment[equipType] = m_arrInventory[inventoryIndex].itemClass;
+	m_arrInventory[inventoryIndex].itemClass = tempItemClass;
+
+	OnEquipEdited.Broadcast();
+	OnInventoryEdited.Broadcast();
+}
+
+
 bool AInGamePlayerState::useItem(int inventoryIndex)
 {
 	auto inventoryItemClass = m_arrInventory[inventoryIndex].itemClass;
@@ -136,20 +164,41 @@ bool AInGamePlayerState::useItem(int inventoryIndex)
 	{
 		case EItemType::Consumable:
 		{
-			if (ptrItem->UseItem(character))
+			bool isSuccess = ptrItem->UseItem(character);
+			if (isSuccess)
 				return removeItemAt(inventoryIndex);
 		}
 		case EItemType::Equipable:
 		{
-			ptrItem->UseItem(character);
+			bool isSuccess = ptrItem->UseItem(character);
+			if (!isSuccess) return false;
 
-			m_mapEquipment.Emplace(Cast<AEquipItem>(ptrItem)->GetEquipType(), ptrItem);
-			//removeItemAt(inventoryIndex);
-
-			OnInventoryEdited.Broadcast();
-			OnEquipEdited.Broadcast();
+			auto itemEquip= Cast<AEquipItem>(ptrItem);
+			auto equipType = itemEquip->GetEquipType();
+			if (m_mapEquipment[equipType] == nullptr)
+				MoveToEquip(inventoryIndex, *itemEquip);
+			else
+				SwapEquip(inventoryIndex, equipType);
 		}
 	}
 
 	return false;
+}
+
+bool AInGamePlayerState::unEquip(EEquipType eEquipType)
+{
+	bool isSuccess = addItem(m_mapEquipment[eEquipType]);
+	if (!isSuccess)
+	{
+		// TODO: 노티파이 출력
+		return false;
+	}
+
+	auto character = Cast<ATpsCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	character->UnEquip(eEquipType);
+
+	m_mapEquipment[eEquipType] = nullptr;
+	OnEquipEdited.Broadcast();
+
+	return true;
 }

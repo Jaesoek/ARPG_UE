@@ -2,15 +2,10 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Project_Item_Inven.h"
 #include "GameFramework/Actor.h"
 #include "BaseItem.generated.h"
 
-UENUM(BlueprintType)
-enum class EItemType : uint8
-{
-	None, Consumable, Equipable
-};
 
 UCLASS(Abstract, BlueprintAble)
 class PROJECT_ITEM_INVEN_API ABaseItem : public AActor

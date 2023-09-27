@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Project_Item_Inven.h"
 #include "Blueprint/UserWidget.h"
-#include "Item/BaseItem.h"
 #include "InventorySlot.generated.h"
 
 /**

@@ -17,7 +17,7 @@ ABaseItem::ABaseItem()
 	PrimaryActorTick.bCanEverTick = true;
 
 	m_MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	m_MeshComponent->AttachTo(RootComponent);
+	m_MeshComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	/*
 	// Base Collision Setting
@@ -33,10 +33,8 @@ void ABaseItem::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	/*
-	m_MeshComponent->SetSimulatePhysics(true);
-	m_MeshComponent->SetNotifyRigidBodyCollision(true);
-	*/
+	m_MeshComponent->SetSimulatePhysics(false);
+	m_MeshComponent->SetNotifyRigidBodyCollision(false);
 	m_MeshComponent->SetGenerateOverlapEvents(true);
 }
 

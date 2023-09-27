@@ -1,10 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "UI/InventoryUI.h"
-#include "InGamePlayerState.h"
 #include "UI/InventorySlot.h"
+#include "UI/EquipmentSlot.h"
 
-#include "Item/BaseItem.h"
+#include "InGamePlayerState.h"
+
+#include "Item/EquipItem.h"
 
 #include "Components/UniformGridPanel.h"
 #include "Components/UniformGridSlot.h"
@@ -18,10 +20,19 @@ void UInventoryUI::NativeOnInitialized()
 	// PlayerState 초기화
 	m_playerState = GetOwningPlayer()->GetPlayerState<AInGamePlayerState>();
 
-	// Observing Inventory's add item
+	// Observing edited inventory, equipment container
 	m_playerState->OnInventoryEdited.AddDynamic(this, &UInventoryUI::RefreshInventoryUI);
+	m_playerState->OnEquipEdited.AddDynamic(this, &UInventoryUI::RefreshEquipmentUI);
 
-	// UI Inventory size 초기화
+	// UI Equipment slot 설정
+	m_mapSlotEquip.Add(EEquipType::Weapon, WeaponEquipSlot);
+	WeaponEquipSlot->setEquipType(EEquipType::Weapon);
+	m_mapSlotEquip.Add(EEquipType::Helmet, HelmetEquipSlot);
+	WeaponEquipSlot->setEquipType(EEquipType::Helmet);
+	m_mapSlotEquip.Add(EEquipType::Breast, BreastEquipSlot);
+	WeaponEquipSlot->setEquipType(EEquipType::Breast);
+
+	// UI Inventory size 초기화 및 Slot UI 할당
 	m_nInventorySize = m_playerState->getInventory().Max();
 	m_arrSlotInventory.Init(nullptr, m_nInventorySize);
 
@@ -66,6 +77,28 @@ void UInventoryUI::RefreshInventoryUI()
 
 		m_arrSlotInventory[i]->setItemCount(arrInventory[i].count);
 	}
+}
+
+void UInventoryUI::RefreshEquipmentUI()
+{
+	auto mapEquipment = m_playerState->getEquipment();
+
+	TSet<EEquipType> setKeys{};
+	mapEquipment.GetKeys(setKeys);
+	for (auto key : setKeys)
+	{
+		if (!IsValid(mapEquipment[key]))
+		{
+			m_mapSlotEquip[key]->setTexture(nullptr);
+		}
+		else
+		{
+			auto ptrItem = Cast<AEquipItem>(mapEquipment[key]->GetDefaultObject());
+			m_mapSlotEquip[key]->setTexture(ptrItem->GetItemThumbnail());
+		}
+		m_mapSlotEquip[key]->setEquipType(key);
+	}
+
 }
 
 void UInventoryUI::AddItemInUI()

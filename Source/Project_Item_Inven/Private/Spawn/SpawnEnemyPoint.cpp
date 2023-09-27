@@ -26,7 +26,6 @@ void ASpawnEnemyPoint::BeginPlay()
 	enemy->GetMesh();
 
 
-
 	// Owner가 없으면
 	if (GetOwner() == nullptr)
 	{

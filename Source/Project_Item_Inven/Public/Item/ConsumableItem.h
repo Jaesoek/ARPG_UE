@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Project_Item_Inven.h"
 #include "Item/BaseItem.h"
 #include "ConsumableItem.generated.h"
 

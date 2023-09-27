@@ -2,12 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Project_Item_Inven.h"
 #include "GameFramework/PlayerState.h"
-
-#include "Item/EquipItem.h"
-#include "Item/ConsumableItem.h"
-
 #include "InGamePlayerState.generated.h"
 
 class ABaseItem;
@@ -28,16 +24,6 @@ struct FInventoryStruct
 	int count;
 };
 
-USTRUCT(BlueprintType)
-struct FEquipmentStruct
-{
-	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Equipment")
-	EEquipType eEquipType;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Equipment")
-	TSubclassOf<AEquipItem> itemClass;
-};
 
 UCLASS(Abstract)
 class PROJECT_ITEM_INVEN_API AInGamePlayerState : public APlayerState
@@ -64,11 +50,15 @@ private:
 
 	/** Equipment items map */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Equipment, Meta = (AllowPrivateAccess = true))
-	TMap<EEquipType, AEquipItem*> m_mapEquipment;
+	TMap<EEquipType, TSubclassOf<AEquipItem>> m_mapEquipment;
 	
 public:
 	UFUNCTION(BlueprintCallable)
 	const TArray<FInventoryStruct>& getInventory() const { return m_arrInventory; };
+
+	UFUNCTION(BlueprintCallable)
+	const TMap<EEquipType, TSubclassOf<AEquipItem>>& getEquipment() const { return m_mapEquipment; };
+
 
 	UFUNCTION(BlueprintCallable)
 	bool addItem(TSubclassOf<ABaseItem> itemClass);
@@ -86,7 +76,14 @@ private:
 	bool addConsumableItem(TSubclassOf<ABaseItem> itemClass);
 	bool addEquipableItem(TSubclassOf<ABaseItem> itemClass);
 
+	void MoveToEquip(int inventoryIndex, const AEquipItem& equipItemObj);
+
+	void SwapEquip(int inventoryIndex, EEquipType equipType);
+
 public:
 	UFUNCTION(BlueprintCallable)
 	bool useItem(int inventoryIndex);
+
+	UFUNCTION(BlueprintCallable)
+	bool unEquip(EEquipType eEquipType);
 };

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "Project_Item_Inven.h"
 #include "GameFramework/Character.h"
 #include "TpsCharacter.generated.h"
 
@@ -131,6 +131,7 @@ protected: // Logics about key,mouse Input
 
 public:
 	bool Equip(TSubclassOf<AEquipItem> equipItemClass);
+	void UnEquip(EEquipType equipType);
 
 protected: // Logics about key,mouse Input
 	void WeaponSwitchRifle();

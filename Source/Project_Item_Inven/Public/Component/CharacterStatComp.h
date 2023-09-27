@@ -13,23 +13,24 @@ class PROJECT_ITEM_INVEN_API UCharacterStatComp : public UActorComponent
 
 	// It can't created alone
 	friend class ATpsCharacter;
+	friend class ABaseEnemy;
 
 private:
 	float m_HpCurrent;
 
-	UPROPERTY(EditAnywhere, Category = "Base Stat", meta = (ClampMin = "0.0", UIMin = "100.0"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Stat", meta = (ClampMin = "0.0", UIMin = "100.0", AllowPrivateAccess = true))
 	float m_HpMax_Base;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0.0", UIMin = "10.0", AllowPrivateAccess = true))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0.0", UIMin = "10.0", AllowPrivateAccess = true))
 	float m_HpRecovery_Base;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0", UIMin = "20"))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0", UIMin = "20", AllowPrivateAccess = true))
 	int m_ATK_Base;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0", ClampMax = "100", UIMin = "10"))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0", ClampMax = "100", UIMin = "10", AllowPrivateAccess = true))
 	int m_CriticalRate_Base;
 
-	UPROPERTY(Transient, EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0", UIMin = "50"))
+	UPROPERTY(BlueprintReadWrite, Transient, EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0", UIMin = "50", AllowPrivateAccess = true))
 	int m_CriticalDamage_Base;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Base Stat", meta = (ClampMin = "0.2", UIMin = "1.0", AllowPrivateAccess = true))

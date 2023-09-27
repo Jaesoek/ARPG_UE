@@ -272,24 +272,25 @@ bool ATpsCharacter::Equip(TSubclassOf<AEquipItem> equipItemClass)
 	{
 		case EEquipType::Weapon :
 		{
-			if (m_WeaponActorComp->GetChildActorClass() == equipItemClass)
-			{
-				m_WeaponActorComp->SetChildActorClass(nullptr);
-				m_CurrentWeapon = nullptr;
-				return false;
-			}
-			else
-			{
-				m_WeaponActorComp->SetChildActorClass(equipItemClass);
-				m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
-				return true;
-			}
+			m_WeaponActorComp->SetChildActorClass(equipItemClass);
+			m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
 		}
 	}
 
-	return false;
+	return true;
 }
 
+void ATpsCharacter::UnEquip(EEquipType equipType)
+{
+	switch (equipType)
+	{
+		case EEquipType::Weapon :
+		{
+			m_WeaponActorComp->SetChildActorClass(nullptr);
+			m_CurrentWeapon = nullptr;
+		}
+	}
+}
 
 void ATpsCharacter::WeaponSwitchRifle()
 {

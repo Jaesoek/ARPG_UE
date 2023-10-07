@@ -85,12 +85,12 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
 	EWeaponMode m_eWeaponMode;
 
-private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
 	class AEquipItem* m_CurrentWeapon;
 
-	UPROPERTY(EditAnywhere, Category = Animation) // TODO: 언젠간 어디로 옮겨야하는디...
-	UAnimMontage* m_DashAnimation;
+private:
+	UPROPERTY(EditAnywhere, Category = Animation)
+	UAnimMontage* m_DodgeAnimation;
 
 private: // Control with animation asset
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Meta = (AllowPrivateAccess = true))
@@ -99,6 +99,7 @@ private: // Control with animation asset
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Meta = (AllowPrivateAccess = true))
 	bool isDashable;
 
+	FTimerHandle m_TimerHandle_Sprint;
 
 public:
 	ATpsCharacter();
@@ -119,6 +120,8 @@ protected: // Logics about key,mouse Input
 	void LookUp(float NewAxisValue);
 
 	void Dash();
+	void Dash_Pressed();
+	void Dash_Released();
 
 	void Attack();
 

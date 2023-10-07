@@ -89,6 +89,8 @@ void ATpsCharacter::BeginPlay()
 void ATpsCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// TODO: 여기
 }
 
 void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -105,9 +107,8 @@ void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("MouseWheel", IE_Pressed, this, &ATpsCharacter::FocusEnemySwitch);
 	PlayerInputComponent->BindAction("KeyTab", IE_Pressed, this, &ATpsCharacter::FocusEnemyOnOff);
 
-	// TODO: Roll / Sprint 구분 필요
-	PlayerInputComponent->BindAction("KeyShift", IE_Pressed, this, &ATpsCharacter::Dash);
-//	PlayerInputComponent->BindAction("KeyShift", IE_Released, this, &ATpsCharacter::Dash);
+	PlayerInputComponent->BindAction("KeyShift", IE_Pressed, this, &ATpsCharacter::Dash_Pressed);
+	PlayerInputComponent->BindAction("KeyShift", IE_Released, this, &ATpsCharacter::Dash_Released);
 
 	PlayerInputComponent->BindAction("Key1", IE_Pressed, this, &ATpsCharacter::Skill1_Pressed);
 	PlayerInputComponent->BindAction("Key1", IE_Released, this, &ATpsCharacter::Skill1_Released);
@@ -182,8 +183,19 @@ void ATpsCharacter::Dash()
 		SetActorRotation(YawRotation);
 	}
 
-	PlayAnimMontage(m_DashAnimation, m_CharacterStatComp->GetAttackSpeed());
+	PlayAnimMontage(m_DodgeAnimation, m_CharacterStatComp->GetAttackSpeed());
 }
+
+void ATpsCharacter::Dash_Pressed()
+{
+
+}
+
+void ATpsCharacter::Dash_Released()
+{
+
+}
+
 
 void ATpsCharacter::Attack()
 {

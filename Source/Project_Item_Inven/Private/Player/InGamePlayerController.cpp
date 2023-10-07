@@ -43,6 +43,8 @@ void AInGamePlayerController::OnPossess(APawn* InPawn)
 	if (Inventory_UI)
 	{
 		m_ptrInventory = Cast<UInventoryUI>(CreateWidget(GetWorld(), Inventory_UI));
+		m_ptrInventory->AddToViewport();
+		m_ptrInventory->SetVisibility(ESlateVisibility::Hidden);
 	}
 	if (InGameHUD_UI)
 	{
@@ -54,9 +56,9 @@ void AInGamePlayerController::OnPossess(APawn* InPawn)
 void AInGamePlayerController::KeyESC()
 {
 	// Inventory 열려있으면 제거
-	if (m_ptrInventory && m_ptrInventory->IsInViewport())
+	if (IsValid(m_ptrInventory) && m_ptrInventory->GetVisibility() != ESlateVisibility::Hidden)
 	{
-		m_ptrInventory->Inventory->SetVisibility(ESlateVisibility::Hidden);
+		m_ptrInventory->SetVisibility(ESlateVisibility::Hidden);
 		SetShowMouseCursor(false);
 		SetInputMode(FInputModeGameOnly{});
 	}
@@ -76,19 +78,16 @@ void AInGamePlayerController::KeyAlt_Released()
 
 void AInGamePlayerController::Inventory()
 {
-	if (m_ptrInventory)
+	if (IsValid(m_ptrInventory) && m_ptrInventory->GetVisibility() != ESlateVisibility::Hidden)
 	{
-		if (m_ptrInventory->IsInViewport())
-		{
-			m_ptrInventory->RemoveFromViewport();
-			SetShowMouseCursor(false);
-			SetInputMode(FInputModeGameOnly{});
-		}
-		else
-		{
-			m_ptrInventory->AddToViewport();
-			SetShowMouseCursor(true);
-			SetInputMode(FInputModeGameAndUI{});
-		}
+		m_ptrInventory->SetVisibility(ESlateVisibility::Hidden);
+		SetShowMouseCursor(false);
+		SetInputMode(FInputModeGameOnly{});
+	}
+	else
+	{
+		m_ptrInventory->SetVisibility(ESlateVisibility::Visible);
+		SetShowMouseCursor(true);
+		SetInputMode(FInputModeGameAndUI{});
 	}
 }

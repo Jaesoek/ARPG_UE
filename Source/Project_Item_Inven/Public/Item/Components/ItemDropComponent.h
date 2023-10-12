@@ -25,27 +25,21 @@ private:
 	FVector m_StartPosition;
 	FVector m_DropPosition;
 
-public:
 	enum class EItemStatus
 	{
 		None, Dropping, Dropped
 	};
-
 	EItemStatus m_eItemStatus;
-	void setStatus(EItemStatus eStatus);
 
 public:
 	UItemDropComponent();
 
 protected:
-	virtual void PostLoad() override;
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-	/** Owner actor(ABaseItem) */
-	UPROPERTY(Transient, DuplicateTransient)
-	AActor* m_ActorItem;
+	void setStatus(EItemStatus eStatus);
 };

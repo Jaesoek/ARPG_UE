@@ -16,7 +16,7 @@ class PROJECT_ITEM_INVEN_API IUseSlot
 {
 	GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void UseSlot();
+	virtual bool UseSlot_Pressed(FString& strUnableReason) = 0;
+	virtual bool UseSlot_Released() = 0;
 };

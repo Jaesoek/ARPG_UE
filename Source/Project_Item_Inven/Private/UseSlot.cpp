@@ -3,7 +3,3 @@
 
 #include "UseSlot.h"
 
-void IUseSlot::UseSlot()
-{
-}
-

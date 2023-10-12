@@ -9,8 +9,6 @@
 #include "InGamePlayerState.h"
 #include "Player/TpsCharacter.h"
 
-#include "Item/Components/ItemDropComponent.h"
-
 
 ABaseItem::ABaseItem()
 {

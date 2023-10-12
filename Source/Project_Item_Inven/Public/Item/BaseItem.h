@@ -16,9 +16,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemMesh, Meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent* m_MeshComponent;
 
-	UPROPERTY(EditAnywhere, Category = DropAnimation)
-	class UItemDropComponent* m_ItemDropComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ItemInfo, Meta = (AllowPrivateAccess = true))
 	UTexture2D* m_Thumbnail;
 

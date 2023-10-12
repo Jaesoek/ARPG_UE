@@ -10,22 +10,13 @@ UItemDropComponent::UItemDropComponent()
 	m_CurveSizeFloat = CreateDefaultSubobject<UCurveFloat>(TEXT("DropSizeCurve"));
 }
 
-void UItemDropComponent::PostLoad()
-{
-	Super::PostLoad();
-
-	// Init owner Actor
-	m_ActorItem = GetOwner();
-}
-
 void UItemDropComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	setStatus(EItemStatus::Dropping);
 }
 
-
-// Called every frame
 void UItemDropComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -40,13 +31,13 @@ void UItemDropComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 				// Size(with Curve), Rotation
 				float scaleValue = m_CurveSizeFloat->GetFloatValue(m_fDropTime);
-				m_ActorItem->SetActorScale3D(FVector(scaleValue));
-				m_ActorItem->SetActorRelativeRotation(FRotator(m_fDropTime * 360 * 2, 0.f, 0.f));
+				GetOwner()->SetActorScale3D(FVector(scaleValue));
+				GetOwner()->SetActorRelativeRotation(FRotator(m_fDropTime * 360 * 2, 0.f, 0.f));
 
 				// Location
 				auto&& location = FMath::Lerp(m_StartPosition, m_DropPosition, m_fDropTime / 2.f);
 				location.Z += sinf(m_fDropTime * PI) * 200.f;
-				m_ActorItem->SetActorLocation(location);
+				GetOwner()->SetActorLocation(location);
 			}
 			break;
 		}
@@ -64,7 +55,7 @@ void UItemDropComponent::setStatus(EItemStatus eStatus)
 
 	if (m_eItemStatus == EItemStatus::Dropped)
 	{
-		m_ActorItem->SetActorRelativeRotation(FRotator::ZeroRotator);
+		GetOwner()->SetActorRelativeRotation(FRotator::ZeroRotator);
 
 		/*
 		m_MeshComponent->SetSimulatePhysics(false);
@@ -77,7 +68,7 @@ void UItemDropComponent::setStatus(EItemStatus eStatus)
 		m_fDropTime = 0.f;
 		float nRadius = FMath::RandRange(50, m_uMaxDropRadius);
 		float fAngle = (float)FMath::RandRange(0, 359);
-		m_StartPosition = m_ActorItem->GetActorLocation();
+		m_StartPosition = GetOwner()->GetActorLocation();
 		m_DropPosition = FVector(cos(fAngle), sinf(fAngle), 0.f) * nRadius + m_StartPosition;
 
 		/*

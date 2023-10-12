@@ -43,9 +43,6 @@ public:
 
 	// Animations
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
-	class UWidgetAnimation* Animation_Damage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* Animation_Heal;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)

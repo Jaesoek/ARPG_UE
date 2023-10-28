@@ -47,10 +47,10 @@ void _BindSkillLogic(UBaseSkillComponent* skillComp, USkillSlot* skillSlot)
 void UInGameHUD::BindSkill()
 {
 	if (!IsValid(m_pPlayerChar)) return;
-	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[0], Skill_Slot_1);
-	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[1], Skill_Slot_2);
-	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[2], Skill_Slot_3);
-	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[3], Skill_Slot_4);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[0], QuickSlot_1);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[1], QuickSlot_2);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[2], QuickSlot_3);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[3], QuickSlot_4);
 }
 
 void UInGameHUD::EditHpProgress(float currentHp, bool isHeal)

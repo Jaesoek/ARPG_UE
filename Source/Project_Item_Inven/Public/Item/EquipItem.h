@@ -11,11 +11,14 @@ class PROJECT_ITEM_INVEN_API AEquipItem : public ABaseItem
 {
 	GENERATED_BODY()
 
-private:
-	UPROPERTY(EditDefaultsOnly, Category = ItemInfo, BlueprintReadOnly, Meta = (AllowprivateAccess))
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = ItemInfo, BlueprintReadOnly)
 	EEquipType m_EquipType;
 
-	UPROPERTY(EditDefaultsOnly, Category = ItemInfo, BlueprintReadOnly, Meta = (AllowprivateAccess))
+	UPROPERTY(EditDefaultsOnly, Category = ItemInfo, BlueprintReadOnly)
+	EWeaponMode m_WeaponType;
+
+	UPROPERTY(EditDefaultsOnly, Category = ItemInfo, BlueprintReadOnly)
 	UAnimMontage* m_AttackMontage;
 
 public:
@@ -29,5 +32,6 @@ public:
 	virtual bool UseItem(ACharacter* character) override;
 
 	FORCEINLINE EEquipType GetEquipType() const { return m_EquipType; };
+	FORCEINLINE EWeaponMode GetWeaponType() const { return m_WeaponType; };
 	FORCEINLINE UAnimMontage* GetAttackMontage() const { return m_AttackMontage; };
 };

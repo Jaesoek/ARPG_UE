@@ -63,7 +63,7 @@ void ATpsCharacter::PostInitializeComponents()
 	int tArrayPos = 0;
 	for (auto skill : arrSkillComp)
 	{
-		m_arrSKillComp.EmplaceAt(tArrayPos, Cast<UBaseSkillComponent>(skill));
+		m_arrSKillComp.EmplaceAt(++tArrayPos, Cast<UBaseSkillComponent>(skill));
 	}
 
 	// BP에 적용된 StatComp 가져오기
@@ -89,8 +89,6 @@ void ATpsCharacter::BeginPlay()
 void ATpsCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// TODO: 여기
 }
 
 void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -107,7 +105,7 @@ void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("MouseWheel", IE_Pressed, this, &ATpsCharacter::FocusEnemySwitch);
 	PlayerInputComponent->BindAction("KeyTab", IE_Pressed, this, &ATpsCharacter::FocusEnemyOnOff);
 
-	PlayerInputComponent->BindAction("KeyShift", IE_Pressed, this, &ATpsCharacter::Dash_Pressed);
+	PlayerInputComponent->BindAction("KeyShift", IE_Pressed, this, &ATpsCharacter::Dash);
 	PlayerInputComponent->BindAction("KeyShift", IE_Released, this, &ATpsCharacter::Dash_Released);
 
 	PlayerInputComponent->BindAction("Key1", IE_Pressed, this, &ATpsCharacter::Skill1_Pressed);
@@ -213,6 +211,13 @@ void ATpsCharacter::Attack()
 
 void ATpsCharacter::Skill1_Pressed()
 {
+	if (m_CurrentWeapon == nullptr)
+	{
+		auto InGameController = Cast<AInGamePlayerController>(GetController());
+		InGameController->GetInGameHUD()->PlayAnim_Show_WarningText(TEXT("No weapon!"));
+		return;
+	}
+
 	auto skillComp = m_arrSKillComp[0];
 	FString strUnableReason{};
 	if (skillComp == nullptr || !skillComp->ActivateSkill(strUnableReason))
@@ -233,6 +238,13 @@ void ATpsCharacter::Skill1_Released()
 
 void ATpsCharacter::Skill2_Pressed()
 {
+	if (m_CurrentWeapon == nullptr)
+	{
+		auto InGameController = Cast<AInGamePlayerController>(GetController());
+		InGameController->GetInGameHUD()->PlayAnim_Show_WarningText(TEXT("No weapon!"));
+		return;
+	}
+
 	auto skillComp = m_arrSKillComp[1];
 	FString strUnableReason{};
 	if (skillComp == nullptr || !skillComp->ActivateSkill(strUnableReason))
@@ -286,6 +298,11 @@ bool ATpsCharacter::Equip(TSubclassOf<AEquipItem> equipItemClass)
 		{
 			m_WeaponActorComp->SetChildActorClass(equipItemClass);
 			m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
+
+			if (m_CurrentWeapon->GetWeaponType() == EWeaponMode::Rifle)
+				WeaponSwitchRifle();
+			else if (m_CurrentWeapon->GetWeaponType() == EWeaponMode::Sword)
+				WeaponSwitchSword();
 		}
 	}
 
@@ -300,44 +317,44 @@ void ATpsCharacter::UnEquip(EEquipType equipType)
 		{
 			m_WeaponActorComp->SetChildActorClass(nullptr);
 			m_CurrentWeapon = nullptr;
+			WeaponSwitchNoWeapon();
 		}
 	}
 }
 
 void ATpsCharacter::WeaponSwitchRifle()
 {
-	if (m_eWeaponMode != EWeaponMode::Rifle)
-	{
-		SetWeaponMode(EWeaponMode::Rifle);
-		GetCharacterMovement()->MaxWalkSpeed = 400.f;  // 캐릭터 설정 변경
-		SetTpsMode(); // 카메라 설정 변경
+	if (m_eWeaponMode == EWeaponMode::Rifle) return;
 
-		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
-		m_CurrentWeapon->SetOwner(this);
-	}
+	SetWeaponMode(EWeaponMode::Rifle);
+	GetCharacterMovement()->MaxWalkSpeed = 400.f;
+	SetTpsMode();
 }
 
 void ATpsCharacter::WeaponSwitchSword()
 {
-	if (m_eWeaponMode != EWeaponMode::Sword)
+	if (m_eWeaponMode == EWeaponMode::Sword) return;
+
+	SetWeaponMode(EWeaponMode::Sword);
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	SetTravelMode();
+
+	/* Skill 생성 및 적용
+	UBaseSkillComponent* tSkill = NewObject<UBaseSkillComponent>(m_CurrentWeapon, m_CurrentWeapon->m_SkillCompClass, FName(TEXT("Skill1")));
+	if (IsValid(tSkill))
 	{
-		SetWeaponMode(EWeaponMode::Sword);
-		GetCharacterMovement()->MaxWalkSpeed = 600.f;
-		SetTravelMode();
-
-		m_CurrentWeapon = Cast<AEquipItem>(m_WeaponActorComp->GetChildActor());
-		m_CurrentWeapon->SetOwner(this);
-
-		/* Skill 생성 및 적용
-		UBaseSkillComponent* tSkill = NewObject<UBaseSkillComponent>(m_CurrentWeapon, m_CurrentWeapon->m_SkillCompClass, FName(TEXT("Skill1")));
-		if (IsValid(tSkill))
-		{
-			tSkill->RegisterComponent();
-			m_arrSKillComp.EmplaceAt(0, tSkill);
-			m_OnSkillChanged.Broadcast();
-		}
-		*/
+		tSkill->RegisterComponent();
+		m_arrSKillComp.EmplaceAt(0, tSkill);
+		m_OnSkillChanged.Broadcast();
 	}
+	*/
+}
+
+void ATpsCharacter::WeaponSwitchNoWeapon()
+{
+	SetWeaponMode(EWeaponMode::Default);
+	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	SetTravelMode();
 }
 
 void ATpsCharacter::FocusEnemyOnOff()

@@ -111,7 +111,7 @@ void USkillRangeMagic::CastingSkill()
 		location = result.ImpactPoint;
 		pitchRotation = FRotationMatrix::MakeFromX(result.ImpactNormal).Rotator();
 
-		if (FVector::DotProduct(FVector::ZAxisVector, result.ImpactNormal) < 0.4f)
+		if (FVector::DotProduct(FVector::ZAxisVector, result.ImpactNormal) < 0.6f)
 			isAvailable = false;
 	}
 	else

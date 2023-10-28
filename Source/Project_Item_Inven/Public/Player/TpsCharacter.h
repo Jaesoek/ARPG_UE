@@ -5,12 +5,6 @@
 #include "GameFramework/Character.h"
 #include "TpsCharacter.generated.h"
 
-UENUM(BlueprintType)
-enum class EWeaponMode : uint8
-{
-	Default, Sword, Rifle
-};
-
 DECLARE_DELEGATE(FOnCharacterMove);
 DECLARE_DELEGATE(FCharacterMoveOnlyMouse);
 DECLARE_DELEGATE(FCharacterMoveOnlyKey);
@@ -139,6 +133,7 @@ public:
 protected: // Logics about key,mouse Input
 	void WeaponSwitchRifle();
 	void WeaponSwitchSword();
+	void WeaponSwitchNoWeapon();
 
 	void FocusEnemyOnOff();
 	void FocusEnemySwitch();
@@ -148,7 +143,7 @@ public:
 
 public:
 	FORCEINLINE const EWeaponMode GetWeaponMode() const { return m_eWeaponMode; }
-	FORCEINLINE void SetWeaponMode(EWeaponMode weaponMode) { m_eWeaponMode = weaponMode; }
+	FORCEINLINE void SetWeaponMode(EWeaponMode weaponType) { m_eWeaponMode = weaponType; }
 
 public: // Camera mode setting
 	UFUNCTION(BlueprintCallable)

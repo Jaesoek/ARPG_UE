@@ -22,11 +22,6 @@ void ASpawnEnemyPoint::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto enemy = Cast<ABaseEnemy>(m_classMonster.GetDefaultObject());
-	enemy->GetMesh();
-
-
-	// Owner가 없으면
 	if (GetOwner() == nullptr)
 	{
 		GetWorldTimerManager().SetTimer(

@@ -24,19 +24,16 @@ public:
 	class UProgressBar* progress_hp;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UHorizontalBox* HorizontalBox_Skill;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UHorizontalBox* HorizontalBox_BuffSkill;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	USkillSlot* Skill_Slot_1;
+	USkillSlot* QuickSlot_1;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	USkillSlot* Skill_Slot_2;
+	USkillSlot* QuickSlot_2;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	USkillSlot* Skill_Slot_3;
+	USkillSlot* QuickSlot_3;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	USkillSlot* Skill_Slot_4;
+	USkillSlot* QuickSlot_4;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* TextBlock_Guide;

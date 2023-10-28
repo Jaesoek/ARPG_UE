@@ -16,6 +16,7 @@ ABaseItem::ABaseItem()
 
 	m_MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	m_MeshComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	m_MeshComponent->bReceivesDecals = false;
 
 	/*
 	// Base Collision Setting

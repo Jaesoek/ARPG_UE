@@ -16,3 +16,9 @@ enum class EEquipType : uint8
 {
 	Weapon, Helmet, Breast
 };
+
+UENUM(BlueprintType)
+enum class EWeaponMode : uint8
+{
+	Default, Sword, Rifle
+};

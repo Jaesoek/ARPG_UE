@@ -17,6 +17,8 @@ void USkillSlot::UpdateCoolTimePercent(float fPercent)
 
 void USkillSlot::SetSlotIcon(UTexture2D* thumbnail)
 {
+	m_Thumbnail = thumbnail;
+
 	m_ProgressCoolTime->WidgetStyle.SetBackgroundImage(
 		UWidgetBlueprintLibrary::MakeBrushFromTexture(thumbnail)
 	);

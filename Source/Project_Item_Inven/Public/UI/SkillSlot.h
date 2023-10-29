@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	int m_nIndex;
 
+	UPROPERTY(BlueprintReadOnly)
+	UTexture2D* m_Thumbnail;
+
 public:
 	void UpdateCoolTimePercent(float fPercent);
 	void SetSlotIcon(UTexture2D* thumbnail);

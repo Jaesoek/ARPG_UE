@@ -14,6 +14,8 @@ class PROJECT_ITEM_INVEN_API USkillSlot : public UUserWidget
 {
 	GENERATED_BODY()
 
+		friend class UInGameHUD;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Meta = (BindWidget))
 	class UProgressBar* m_ProgressCoolTime;
@@ -21,8 +23,17 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* Anim_CoolTime;
 
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	FKey m_bindedKey;
+
+	UPROPERTY(BlueprintReadOnly)
+	int m_nIndex;
+
 public:
 	void UpdateCoolTimePercent(float fPercent);
 	void SetSlotIcon(UTexture2D* thumbnail);
 
+	FORCEINLINE void SetBindedKey(FKey key) { m_bindedKey = key; };
+	FORCEINLINE FKey GetBindedKey() { return m_bindedKey; };
 };

@@ -123,12 +123,17 @@ protected: // Logics about key,mouse Input
 	void Skill1_Released();
 	void Skill2_Pressed();
 	void Skill2_Released();
-	void Skill3();
-	void Skill4();
+	void Skill3_Pressed();
+	void Skill3_Released();
+	void Skill4_Pressed();
+	void Skill4_Released();
 
 public:
 	bool Equip(TSubclassOf<AEquipItem> equipItemClass);
 	void UnEquip(EEquipType equipType);
+
+	UFUNCTION(BlueprintCallable)
+	void SwapSkill(int nFristIndex, int nSecondIndex);
 
 protected: // Logics about key,mouse Input
 	void WeaponSwitchRifle();

@@ -29,12 +29,15 @@ void UInGameHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Tick(MyGeometry, InDeltaTime);
 }
 
-void _BindSkillLogic(UBaseSkillComponent* skillComp, USkillSlot* skillSlot)
+void _BindSkillLogic(UBaseSkillComponent* skillComp, USkillSlot* skillSlot, const FKey& bindedKey)
 {
 	if (IsValid(skillComp))
 	{
+		skillComp->OnCoolTIme().Clear();
+
 		skillComp->OnCoolTIme().AddUObject(skillSlot, &USkillSlot::UpdateCoolTimePercent);
 		skillComp->RefreshCoolTimeDelegate();
+
 		skillSlot->SetSlotIcon(skillComp->m_Texture);
 	}
 	else
@@ -42,15 +45,22 @@ void _BindSkillLogic(UBaseSkillComponent* skillComp, USkillSlot* skillSlot)
 		skillSlot->UpdateCoolTimePercent(0.f);
 		skillSlot->SetSlotIcon(nullptr);
 	}
+
+	skillSlot->SetBindedKey(bindedKey); // (UI) Skill slot key binding
 }
 
 void UInGameHUD::BindSkill()
 {
 	if (!IsValid(m_pPlayerChar)) return;
-	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[0], QuickSlot_1);
-	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[1], QuickSlot_2);
-	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[2], QuickSlot_3);
-	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[3], QuickSlot_4);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[0], QuickSlot_1, EKeys::One);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[1], QuickSlot_2, EKeys::Two);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[2], QuickSlot_3, EKeys::Three);
+	_BindSkillLogic(m_pPlayerChar->m_arrSKillComp[3], QuickSlot_4, EKeys::Four);
+
+	QuickSlot_1->m_nIndex = 0;
+	QuickSlot_2->m_nIndex = 1;
+	QuickSlot_3->m_nIndex = 2;
+	QuickSlot_4->m_nIndex = 3;
 }
 
 void UInGameHUD::EditHpProgress(float currentHp, bool isHeal)

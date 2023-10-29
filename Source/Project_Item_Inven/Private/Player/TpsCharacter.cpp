@@ -60,10 +60,9 @@ void ATpsCharacter::PostInitializeComponents()
 
 	// BP에 적용된 SkillComp 리스트 가져오기
 	const auto& arrSkillComp = GetComponentsByClass(UBaseSkillComponent::StaticClass());
-	int tArrayPos = 0;
 	for (auto skill : arrSkillComp)
 	{
-		m_arrSKillComp.EmplaceAt(++tArrayPos, Cast<UBaseSkillComponent>(skill));
+		m_arrSKillComp.EmplaceAt(0, Cast<UBaseSkillComponent>(skill));
 	}
 
 	// BP에 적용된 StatComp 가져오기
@@ -112,8 +111,10 @@ void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Key1", IE_Released, this, &ATpsCharacter::Skill1_Released);
 	PlayerInputComponent->BindAction("Key2", IE_Pressed, this, &ATpsCharacter::Skill2_Pressed);
 	PlayerInputComponent->BindAction("Key2", IE_Released, this, &ATpsCharacter::Skill2_Released);
-	PlayerInputComponent->BindAction("Key3", IE_Pressed, this, &ATpsCharacter::Skill3);
-	PlayerInputComponent->BindAction("Key4", IE_Pressed, this, &ATpsCharacter::Skill4);
+	PlayerInputComponent->BindAction("Key3", IE_Pressed, this, &ATpsCharacter::Skill3_Pressed);
+	PlayerInputComponent->BindAction("Key3", IE_Released, this, &ATpsCharacter::Skill3_Released);
+	PlayerInputComponent->BindAction("Key4", IE_Pressed, this, &ATpsCharacter::Skill4_Pressed);
+	PlayerInputComponent->BindAction("Key4", IE_Released, this, &ATpsCharacter::Skill4_Released);
 }
 
 void ATpsCharacter::MoveForward(float Value)
@@ -263,8 +264,15 @@ void ATpsCharacter::Skill2_Released()
 		skillComp->ReleasedSkill();
 }
 
-void ATpsCharacter::Skill3()
+void ATpsCharacter::Skill3_Pressed()
 {
+	if (m_CurrentWeapon == nullptr)
+	{
+		auto InGameController = Cast<AInGamePlayerController>(GetController());
+		InGameController->GetInGameHUD()->PlayAnim_Show_WarningText(TEXT("No weapon!"));
+		return;
+	}
+
 	auto skillComp = m_arrSKillComp[2];
 	FString strUnableReason{};
 	if (skillComp == nullptr || !skillComp->ActivateSkill(strUnableReason))
@@ -276,8 +284,22 @@ void ATpsCharacter::Skill3()
 	}
 }
 
-void ATpsCharacter::Skill4()
+void ATpsCharacter::Skill3_Released()
 {
+	auto skillComp = m_arrSKillComp[2];
+	if (skillComp != nullptr)
+		skillComp->ReleasedSkill();
+}
+
+void ATpsCharacter::Skill4_Pressed()
+{
+	if (m_CurrentWeapon == nullptr)
+	{
+		auto InGameController = Cast<AInGamePlayerController>(GetController());
+		InGameController->GetInGameHUD()->PlayAnim_Show_WarningText(TEXT("No weapon!"));
+		return;
+	}
+
 	auto skillComp = m_arrSKillComp[3];
 	FString strUnableReason{};
 	if (skillComp == nullptr || !skillComp->ActivateSkill(strUnableReason))
@@ -287,6 +309,13 @@ void ATpsCharacter::Skill4()
 		auto InGameController = Cast<AInGamePlayerController>(GetController());
 		InGameController->GetInGameHUD()->PlayAnim_SkillUnable_4(strUnableReason);
 	}
+}
+
+void ATpsCharacter::Skill4_Released()
+{
+	auto skillComp = m_arrSKillComp[3];
+	if (skillComp != nullptr)
+		skillComp->ReleasedSkill();
 }
 
 bool ATpsCharacter::Equip(TSubclassOf<AEquipItem> equipItemClass)
@@ -320,6 +349,12 @@ void ATpsCharacter::UnEquip(EEquipType equipType)
 			WeaponSwitchNoWeapon();
 		}
 	}
+}
+
+void ATpsCharacter::SwapSkill(int nFirstIndex, int nSecondIndex)
+{
+	m_arrSKillComp.SwapMemory(nFirstIndex, nSecondIndex);
+	m_OnSkillChanged.Broadcast();
 }
 
 void ATpsCharacter::WeaponSwitchRifle()

@@ -16,29 +16,35 @@ private:
 	//  Defered Spawn 활용 필수
 	UPROPERTY()
 	TArray<class ABaseItem*> m_arrDropItem;
-public:
-	FORCEINLINE const TArray<class ABaseItem*>& GetDropItemArr() const { return m_arrDropItem; };
-	FORCEINLINE void SetDropItemArr(class ABaseItem* const aItem) { m_arrDropItem.Add(aItem); };
 
-private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, Meta = (AllowPrivateAccess = true))
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	class UCharacterStatComp* m_CharacterStatComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UIWidget, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UIWidget)
 	class UWidgetComponent* m_HpBarWidget;
+
+	class UMaterialInstanceDynamic* m_MID_Mesh;
 
 public:
 	ABaseEnemy();
 
 protected:
-	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
+	virtual void BeginPlay() override;
 
-public:
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 private:
+	void SpawnStart();
+
 	void Dead();
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void EnterAttackState();
+
+public:
+	FORCEINLINE const TArray<class ABaseItem*>& GetDropItemArr() const { return m_arrDropItem; };
+	FORCEINLINE void SetDropItemArr(class ABaseItem* const aItem) { m_arrDropItem.Add(aItem); };
 };

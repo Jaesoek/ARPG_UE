@@ -2,8 +2,12 @@
 
 
 #include "Enemy/BaseEnemy.h"
+
+#include "UI/EnemyHpWidget.h"
+
 #include "Component/CharacterStatComp.h"
 #include "Components/WidgetComponent.h"
+#include "Components/ProgressBar.h"
 
 #include "Utility/TimerLatent.h"
 
@@ -14,13 +18,10 @@ ABaseEnemy::ABaseEnemy()
 	// Mesh Decal 영향 X
 	GetMesh()->bReceivesDecals = false;
 
-	// Status component
-	m_CharacterStatComp = CreateDefaultSubobject<UCharacterStatComp>(TEXT("StatusComponent"));
-
 	// Hp Widget component
-	m_HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HpBarWidgetComp"));
-	m_HpBarWidget->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	m_HpBarWidget->SetRelativeLocation(FVector::ZeroVector);
+	m_HpBarWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("HpBarWidgetComp"));
+	m_HpBarWidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	m_HpBarWidgetComp->SetRelativeLocation(FVector::ZeroVector);
 }
 
 void ABaseEnemy::PostInitializeComponents()
@@ -31,8 +32,11 @@ void ABaseEnemy::PostInitializeComponents()
 	m_MID_Mesh = UMaterialInstanceDynamic::Create(meshMaterial, this);
 	GetMesh()->SetMaterial(0, m_MID_Mesh);
 
-	// TOOD: Hp bar widget 링킹
-	//m_CharacterStatComp->OnHpChanged().AddUObject(this, );
+	m_enemyHpBar = Cast<UEnemyHpWidget>(m_HpBarWidgetComp->GetWidget());
+
+	m_CharacterStatComp = Cast<UCharacterStatComp>(GetComponentByClass(UCharacterStatComp::StaticClass()));
+	if (IsValid(m_CharacterStatComp))
+		m_CharacterStatComp->OnHpChanged().AddUObject(this, &ABaseEnemy::EditHpProgress);
 }
 
 void ABaseEnemy::BeginPlay()
@@ -44,7 +48,8 @@ void ABaseEnemy::BeginPlay()
 
 float ABaseEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	return 0.0f;
+	m_CharacterStatComp->ReduceHp(DamageAmount);
+	return DamageAmount;
 }
 
 void ABaseEnemy::SpawnStart()
@@ -77,6 +82,13 @@ void ABaseEnemy::Dead()
 
 	// TODO: Dead Animation 출력 및 Scheduler Disappear 효과 출력
 	auto animInstance = GetMesh()->GetAnimInstance();
+}
+
+void ABaseEnemy::EditHpProgress(float currentHp, bool isHeal)
+{
+	float percent = currentHp / m_CharacterStatComp->GetMaxHp();
+	if (IsValid(m_enemyHpBar))
+		m_enemyHpBar->progress_hp->SetPercent(percent);
 }
 
 void ABaseEnemy::EnterAttackState()

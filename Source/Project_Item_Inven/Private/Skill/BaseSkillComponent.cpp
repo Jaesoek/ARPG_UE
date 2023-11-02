@@ -56,13 +56,3 @@ void UBaseSkillComponent::CastingSkill()
 {
 	check(0 && "You must override this");
 }
-
-bool UBaseSkillComponent::UseSlot_Pressed(FString& strUnableReason)
-{
-	return false;
-}
-
-bool UBaseSkillComponent::UseSlot_Released()
-{
-	return false;
-}

@@ -11,20 +11,22 @@ class PROJECT_ITEM_INVEN_API ABaseEnemy : public ACharacter
 {
 	GENERATED_BODY()
 
-private:
-	// 해당 변수 결정 타이밍: 생성시 추가되는 식으로 설정
-	//  Defered Spawn 활용 필수
-	UPROPERTY()
-	TArray<class ABaseItem*> m_arrDropItem;
-
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	class UCharacterStatComp* m_CharacterStatComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UIWidget)
-	class UWidgetComponent* m_HpBarWidget;
+	class UWidgetComponent* m_HpBarWidgetComp;
+
+	class UEnemyHpWidget* m_enemyHpBar;
 
 	class UMaterialInstanceDynamic* m_MID_Mesh;
+
+private:
+	// 해당 변수 결정 타이밍: 생성시 추가되는 식으로 설정
+	//  Defered Spawn 활용 필수
+	UPROPERTY()
+	TArray<class ABaseItem*> m_arrDropItem;
 
 public:
 	ABaseEnemy();
@@ -39,6 +41,8 @@ private:
 	void SpawnStart();
 
 	void Dead();
+
+	void EditHpProgress(float currentHp, bool isHeal);
 
 public:
 	UFUNCTION(BlueprintCallable)

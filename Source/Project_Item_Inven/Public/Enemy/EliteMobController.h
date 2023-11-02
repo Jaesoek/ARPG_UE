@@ -9,8 +9,11 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class PROJECT_ITEM_INVEN_API AEliteMobController : public AAIController
 {
 	GENERATED_BODY()
+
+	
+
 };

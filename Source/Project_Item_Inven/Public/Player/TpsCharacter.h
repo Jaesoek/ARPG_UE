@@ -17,19 +17,21 @@ class PROJECT_ITEM_INVEN_API ATpsCharacter : public ACharacter
 	friend class AInGamePlayerController;
 
 private:
-	// Camera Components
-	UPROPERTY(VisibleAnyWhere, Category = Camera)
-	class USpringArmComponent* m_TpsSpringArm;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = true))
-	class UChildActorComponent* m_TpsChildComponent;
-
+	// TravelMode Camera Components
 	UPROPERTY(VisibleAnyWhere, Category = Camera)
 	class USpringArmComponent* m_TravelSpringArm;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = true))
 	class UChildActorComponent* m_TravelChildComponent;
 
+	// TpsMode Camera Components
+	UPROPERTY(VisibleAnyWhere, Category = Camera)
+	class USpringArmComponent* m_TpsSpringArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = true))
+	class UChildActorComponent* m_TpsChildComponent;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Helmet actor component for equipment
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
@@ -128,6 +130,11 @@ protected: // Logics about key,mouse Input
 	void Skill4_Pressed();
 	void Skill4_Released();
 
+	void FocusEnemyOnOff();
+	void FocusEnemySwitch();
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 public:
 	bool Equip(TSubclassOf<AEquipItem> equipItemClass);
 	void UnEquip(EEquipType equipType);
@@ -135,13 +142,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SwapSkill(int nFristIndex, int nSecondIndex);
 
-protected: // Logics about key,mouse Input
+protected:
 	void WeaponSwitchRifle();
 	void WeaponSwitchSword();
 	void WeaponSwitchNoWeapon();
-
-	void FocusEnemyOnOff();
-	void FocusEnemySwitch();
 
 public:
 	virtual float TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;

@@ -101,9 +101,6 @@ void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &ATpsCharacter::Attack);
 
-	PlayerInputComponent->BindAction("MouseWheel", IE_Pressed, this, &ATpsCharacter::FocusEnemySwitch);
-	PlayerInputComponent->BindAction("KeyTab", IE_Pressed, this, &ATpsCharacter::FocusEnemyOnOff);
-
 	PlayerInputComponent->BindAction("KeyShift", IE_Pressed, this, &ATpsCharacter::Dash);
 	PlayerInputComponent->BindAction("KeyShift", IE_Released, this, &ATpsCharacter::Dash_Released);
 
@@ -115,6 +112,10 @@ void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Key3", IE_Released, this, &ATpsCharacter::Skill3_Released);
 	PlayerInputComponent->BindAction("Key4", IE_Pressed, this, &ATpsCharacter::Skill4_Pressed);
 	PlayerInputComponent->BindAction("Key4", IE_Released, this, &ATpsCharacter::Skill4_Released);
+
+	// TODO: With binder
+	//PlayerInputComponent->BindAction("MouseWheel", IE_Pressed, this, &ATpsCharacter::FocusEnemySwitch);
+	//PlayerInputComponent->BindAction("KeyTab", IE_Pressed, this, &ATpsCharacter::FocusEnemyOnOff);
 }
 
 void ATpsCharacter::MoveForward(float Value)
@@ -201,7 +202,7 @@ void ATpsCharacter::Attack()
 	if (m_CurrentWeapon != nullptr)
 	{
 		if (isAttackable)
-			PlayAnimMontage(m_CurrentWeapon->GetAttackMontage(), m_CharacterStatComp->GetAttackSpeed()); // Item에서 가져올 수 있도록 설정
+			PlayAnimMontage(m_CurrentWeapon->GetAttackMontage(), m_CharacterStatComp->GetAttackSpeed());
 	}
 	else
 	{

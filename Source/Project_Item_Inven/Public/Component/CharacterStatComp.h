@@ -11,7 +11,7 @@ class PROJECT_ITEM_INVEN_API UCharacterStatComp : public UActorComponent
 {
 	GENERATED_BODY()
 
-	// It can't created alone
+	// It can't used alone
 	friend class ATpsCharacter;
 	friend class ABaseEnemy;
 

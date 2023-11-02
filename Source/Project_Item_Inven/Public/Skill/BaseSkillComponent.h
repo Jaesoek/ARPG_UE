@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UseSlot.h"
 #include "Components/ActorComponent.h"
 #include "BaseSkillComponent.generated.h"
 
@@ -14,7 +13,7 @@ enum class ESkillType : uint8
 };
 
 UCLASS(Abstract, Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROJECT_ITEM_INVEN_API UBaseSkillComponent : public UActorComponent, public IUseSlot
+class PROJECT_ITEM_INVEN_API UBaseSkillComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -68,8 +67,4 @@ public:
 	virtual bool ReleasedSkill();
 protected:
 	virtual void CastingSkill();
-
-public:
-	virtual bool UseSlot_Pressed(FString& strUnableReason) override;
-	virtual bool UseSlot_Released() override;
 };

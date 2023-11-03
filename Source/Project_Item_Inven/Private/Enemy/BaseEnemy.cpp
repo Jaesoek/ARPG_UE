@@ -31,17 +31,16 @@ void ABaseEnemy::PostInitializeComponents()
 	auto meshMaterial = GetMesh()->GetMaterial(0);
 	m_MID_Mesh = UMaterialInstanceDynamic::Create(meshMaterial, this);
 	GetMesh()->SetMaterial(0, m_MID_Mesh);
-
-	m_enemyHpBar = Cast<UEnemyHpWidget>(m_HpBarWidgetComp->GetWidget());
-
-	m_CharacterStatComp = Cast<UCharacterStatComp>(GetComponentByClass(UCharacterStatComp::StaticClass()));
-	if (IsValid(m_CharacterStatComp))
-		m_CharacterStatComp->OnHpChanged().AddUObject(this, &ABaseEnemy::EditHpProgress);
 }
 
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	m_enemyHpBar = Cast<UEnemyHpWidget>(m_HpBarWidgetComp->GetWidget());
+	m_CharacterStatComp = Cast<UCharacterStatComp>(GetComponentByClass(UCharacterStatComp::StaticClass()));
+	if (IsValid(m_CharacterStatComp))
+		m_CharacterStatComp->OnHpChanged().AddUObject(this, &ABaseEnemy::EditHpProgress);
 
 	SpawnStart();
 }

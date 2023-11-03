@@ -26,7 +26,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Skill Detail")
 	class UNiagaraSystem* m_NS_Attack;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Skill Detail", Meta = (UIMin = "0.0", UIMax = "80.0", ClampMin = "0.0", ClampMax = "80.0"))
+	UPROPERTY(EditDefaultsOnly, Category = "Skill Detail", Meta = (UIMin = "0.0", UIMax = "160.0", ClampMin = "0.0", ClampMax = "160.0"))
 	float m_AttackRadius;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Skill Detail", Meta = (UIMin = "0.0", UIMax = "80.0", ClampMin = "0.0", ClampMax = "80.0"))

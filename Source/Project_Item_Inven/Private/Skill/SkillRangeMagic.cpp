@@ -162,7 +162,6 @@ bool USkillRangeMagic::ReleasedSkill()
 
 	for (auto hitResult : results)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, hitResult.GetActor()->GetName());
 		hitResult.GetActor()->TakeDamage(m_DamageSkill, FDamageEvent{}, m_OwnerCharcter->GetController(), m_OwnerCharcter);
 	}
 

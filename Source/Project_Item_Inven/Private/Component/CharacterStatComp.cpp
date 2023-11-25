@@ -15,6 +15,10 @@ UCharacterStatComp::UCharacterStatComp()
 	m_mapAttackSpeed = TMap<FString, float>{};
 }
 
+void UCharacterStatComp::InitializeComponent()
+{
+	m_HpCurrent = m_HpMax_Base;
+}
 
 void UCharacterStatComp::BeginPlay()
 {

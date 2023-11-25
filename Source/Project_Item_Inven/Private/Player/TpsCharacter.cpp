@@ -90,6 +90,18 @@ void ATpsCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+float ATpsCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (IsValid(m_CharacterStatComp))
+	{
+		auto remainHp = m_CharacterStatComp->ReduceHp(DamageAmount);
+		if (remainHp <= 0.f)
+			Dead();
+		return DamageAmount;
+	}
+	return 0.f;
+}
+
 void ATpsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -201,6 +213,7 @@ void ATpsCharacter::Attack()
 {
 	if (m_CurrentWeapon != nullptr)
 	{
+		// Attack Motion ½ÇÇà
 		if (isAttackable)
 			PlayAnimMontage(m_CurrentWeapon->GetAttackMontage(), m_CharacterStatComp->GetAttackSpeed());
 	}
@@ -409,17 +422,11 @@ void ATpsCharacter::FocusEnemySwitch()
 	}
 }
 
-float ATpsCharacter::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+void ATpsCharacter::Dead()
 {
-	float resultDmg = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-
-	if (m_CharacterStatComp)
-	{
-		m_CharacterStatComp->ReduceHp(resultDmg);
-		return resultDmg;
-	}
-	return 0.f;
+	// TODO: Dead Logic!
 }
+
 
 void ATpsCharacter::SetTpsMode()
 {

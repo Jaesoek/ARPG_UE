@@ -43,13 +43,18 @@ protected:
 	TMap<FString, int> m_mapCriticalDamage;
 	TMap<FString, float> m_mapAttackSpeed;
 
+public:
+	DECLARE_EVENT_TwoParams(UCharacterStatComp, FHpChangeDelegate, float, bool);
+	FHpChangeDelegate& OnHpChanged() { return m_OnHpChanged; }
 private:
-	float m_fSumDeltaTimeForHpRecovery;
+	FHpChangeDelegate m_OnHpChanged;
+
 
 public:
 	UCharacterStatComp();
 
 protected:
+	virtual void InitializeComponent() override;
 	virtual void BeginPlay() override;
 
 public:
@@ -88,11 +93,4 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float ClearAttackSpeed(FString name);
-
-public:
-	DECLARE_EVENT_TwoParams(UCharacterStatComp, FHpChangeDelegate, float, bool);
-	FHpChangeDelegate& OnHpChanged() { return m_OnHpChanged; }
-private:
-	FHpChangeDelegate m_OnHpChanged;
-
 };

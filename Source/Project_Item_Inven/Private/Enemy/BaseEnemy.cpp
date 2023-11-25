@@ -47,8 +47,15 @@ void ABaseEnemy::BeginPlay()
 
 float ABaseEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	m_CharacterStatComp->ReduceHp(DamageAmount);
-	return DamageAmount;
+	if (IsValid(m_CharacterStatComp))
+	{
+		auto remainHp = m_CharacterStatComp->ReduceHp(DamageAmount);
+		if (remainHp <= 0.f)
+			Dead();
+
+		return DamageAmount;
+	}
+	return 0.f;
 }
 
 void ABaseEnemy::SpawnStart()
@@ -75,9 +82,11 @@ void ABaseEnemy::SpawnStart()
 
 void ABaseEnemy::Dead()
 {
-	// Controller 제거
+	// Remove AIController
 	GetController()->UnPossess();
 	GetController()->Destroy();
+
+	m_CharacterStatComp->OnHpChanged().Clear();
 
 	// TODO: Dead Animation 출력 및 Scheduler Disappear 효과 출력
 	auto animInstance = GetMesh()->GetAnimInstance();

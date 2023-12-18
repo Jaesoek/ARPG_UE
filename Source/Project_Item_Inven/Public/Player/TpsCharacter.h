@@ -16,38 +16,38 @@ class PROJECT_ITEM_INVEN_API ATpsCharacter : public ACharacter
 
 	friend class AInGamePlayerController;
 
-private:
+protected:
 	// TravelMode Camera Components
 	UPROPERTY(VisibleAnyWhere, Category = Camera)
 	class USpringArmComponent* m_TravelSpringArm;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
 	class UChildActorComponent* m_TravelChildComponent;
 
 	// TpsMode Camera Components
 	UPROPERTY(VisibleAnyWhere, Category = Camera)
 	class USpringArmComponent* m_TpsSpringArm;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
 	class UChildActorComponent* m_TpsChildComponent;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	// Helmet actor component for equipment
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip)
 	class UChildActorComponent* m_HelmetActorComp;
 
 	// Breast actor component for equipment
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip)
 	class UChildActorComponent* m_BreastActorComp;
 
 	// Weapon actor component for equipment
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Equip)
 	class UChildActorComponent* m_WeaponActorComp;
 
 
 	// ActorComponents
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	class UCharacterStatComp* m_CharacterStatComp;
 
 	/** For targeting mode */

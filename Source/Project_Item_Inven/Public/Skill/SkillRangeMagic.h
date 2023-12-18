@@ -39,6 +39,6 @@ public:
 public:
 	virtual bool ActivateSkill(FString& strUnableReason) override;
 	virtual bool ReleasedSkill() override;
-protected:
+private:
 	virtual void CastingSkill() override;
 };

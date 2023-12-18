@@ -29,7 +29,10 @@ void UMainMenuHUD::NativeOnInitialized()
 
 void UMainMenuHUD::StartNewGame()
 {
-	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), m_LevelToLoad);
+	if (!m_LevelToLoad.IsNull())
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), m_LevelToLoad);
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("다음 레벨을 지정해주세요"));
 }
 
 void UMainMenuHUD::OpenOptionWidget()
